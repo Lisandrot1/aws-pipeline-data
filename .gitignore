@@ -15,3 +15,6 @@ terraform.tfvars.json
 .terraform.lock.hcl
 .terraformrc
 .terraformrc.yaml
+
+venv/
+__pycache__

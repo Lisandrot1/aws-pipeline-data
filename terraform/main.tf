@@ -1,23 +1,9 @@
-#Bucket CAPA BRONZE
-resource "aws_s3_bucket" "capa-bronze" {
-  bucket = "bronze-ecommerce-dl"
-  tags = {
-    Name = "capa_bronze"
-    Project = "pipeline-aws"
-    Owner = "Torres-IAM"
-  }
-}
- # VERSIONING
-
-resource "aws_s3_bucket_versioning" "versioning-bronze" {
-  bucket = aws_s3_bucket.capa-bronze.id
-  versioning_configuration {
-    status = "Enabled"
-  }
+module "s3_silver" {
+  source = "./modules/s3"
+  bucket_name = var.bucket_silver
 }
 
-# LIFECYCLE
-resource "aws_s3_bucket_lifecycle_configuration" "lifecycle_bronze" {
-  bucket = aws_s3_bucket.capa-bronze.id
-  
+module "s3_gold" {
+  source = "./modules/s3"
+  bucket_name = var.bucket_gold
 }
