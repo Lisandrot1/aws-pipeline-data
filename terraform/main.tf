@@ -1,3 +1,16 @@
+module "s3_bronze" {
+  source = "./modules/s3"
+  bucket_name = var.bucket_bronze
+
+  tags = var.tags_bronze
+
+  block_public_acls       = var.block_public_acls
+  block_public_policy     = var.block_public_policy
+  ignore_public_acls      = var.ignore_public_acls
+  restrict_public_buckets = var.restrict_public_buckets
+
+  lifecycle_config = var.lifecycle_bronze
+}
 module "s3_silver" {
   source = "./modules/s3"
   bucket_name = var.bucket_silver
@@ -8,7 +21,7 @@ module "s3_silver" {
   block_public_policy     = var.block_public_policy
   ignore_public_acls      = var.ignore_public_acls
   restrict_public_buckets = var.restrict_public_buckets
-
+  
   lifecycle_config = var.lifecycle_silver
 }
 
@@ -25,3 +38,4 @@ module "s3_gold" {
 
   lifecycle_config = var.lifecycle_gold
 }
+
