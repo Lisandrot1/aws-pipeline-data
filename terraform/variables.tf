@@ -161,3 +161,22 @@ variable "path_bronze" {
   description = "Lista de las tablas de bronze para identificar en el crawler"
 }
 #===========================================================================
+
+#============================= VARIABLES PARA LA LAMBDA AWS ==================
+
+variable "name_policy_lambda" {
+  type = string
+  description = "Nombre variable poliicy lambda"
+}
+variable "name_rol_lambda" {
+  type = string
+  description = "Nombre variable Rol de  lambda"
+}
+variable "lambda_name" {
+  type = string
+  description = "variable Nombre lambda"
+}
+variable "lambda_tags" {
+  default = {}
+  description = "Tags para la lambda."
+}

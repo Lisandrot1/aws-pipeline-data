@@ -75,3 +75,11 @@ module "db_bronze" {
 #}
 
 #============================= FIN MODULOS AWS GLUE =============================================
+
+#========================================= INICIO MODULOS AWS LAMBDA ============================
+module "data_lambda" {
+  source = "./modules/lambda"
+  role_iam_lambda = aws_iam_role.read_s3_lambda.arn
+  name_lambda = var.lambda_name
+  tags_lambda = var.lambda_tags
+}

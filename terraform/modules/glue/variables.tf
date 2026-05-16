@@ -1,3 +1,4 @@
+#===================== DATA CATALOG VARIABLES ==========================
 variable "name_database" {
   type =  string
   description = "nombre de las bases de datos data catalog"
@@ -7,7 +8,8 @@ variable "tags_data_catalog" {
   default = {}
   description = "variable para las tags de la db metadatos"
 }
-
+#===========================================================================
+#============================ AWS GLUE CRAWLER VARIABLES ===================
 variable "name_crawler" {
   type = string
   description = "nombre de los crawlers para identificar la data"
@@ -24,3 +26,4 @@ variable "bucket_id_crawler" {
   type = string
   description = "Id de los Buckets a identificar"
 }
+#======================================================================

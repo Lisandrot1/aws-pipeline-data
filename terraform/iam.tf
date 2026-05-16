@@ -1,31 +1,4 @@
-# IAM PARA GLUE CRAWLER PARA LEER S3 =====================
-data "aws_iam_policy_document" "crawler-to-s3" {
-    statement {
-      sid = "ReadOnPermisoS3"
-      effect = "Allow"
-      actions = [ 
-        "s3:ListBucket",
-        "s3:GetObject",
-        "s3:PutObject",
-        "s3:GetBucketLocation"
-       ]
-       resources = [
-        "${module.s3_bronze.bucket-arn}",
-        "${module.s3_bronze.bucket-arn}/*",
-        "${module.s3_silver.bucket-arn}",
-        "${module.s3_silver.bucket-arn}/*",
-        "${module.s3_gold.bucket-arn}",
-        "${module.s3_gold.bucket-arn}/*",
-       ]
-    }
-}
-
-resource "aws_iam_policy" "crawler-to-s3" {
-  name = "permisos-crawler-s3"
-  policy = data.aws_iam_policy_document.crawler-to-s3.json
-
-  
-}
+# ================================ ROLE AWS GLUE CRAWLER ===============================================
 
 resource "aws_iam_role" "glue-crawler-role" {
   name = var.name_role_crawler
@@ -47,4 +20,26 @@ resource "aws_iam_role_policy_attachment" "attach-s3-to-crawler" {
   policy_arn = aws_iam_policy.crawler-to-s3.arn
 
 }
-#=============================================================
+#===============================================================================
+#===================== ROL LAMBDA LECTURA S3 ===================================
+
+resource "aws_iam_role" "read_s3_lambda" {
+  name = var.name_rol_lambda
+  assume_role_policy = jsonencode({
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Principal": {
+                "Service": "lambda.amazonaws.com"
+            },
+            "Action": "sts:AssumeRole"
+        }
+    ]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "role_policy_lambda" {
+  role = aws_iam_role.read_s3_lambda.name
+  policy_arn = aws_iam_policy.ReadS3Lambda.arn
+}
+#==========================================================================================================
