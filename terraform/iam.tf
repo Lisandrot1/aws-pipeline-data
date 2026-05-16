@@ -13,7 +13,9 @@ data "aws_iam_policy_document" "crawler-to-s3" {
         "${module.s3_bronze.bucket-arn}",
         "${module.s3_bronze.bucket-arn}/*",
         "${module.s3_silver.bucket-arn}",
-        "${module.s3_silver.bucket-arn}/*"
+        "${module.s3_silver.bucket-arn}/*",
+        "${module.s3_gold.bucket-arn}",
+        "${module.s3_gold.bucket-arn}/*",
        ]
     }
 }

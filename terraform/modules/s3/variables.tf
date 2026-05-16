@@ -1,11 +1,13 @@
 variable "bucket_name" {
   type = string
+  description = "Variable para poner Nombre los buckets"
 }
 
 variable "tags" {
   default = {}
+  description = "Tags para los bucket de s3"
 }
-
+# ==================== VARIABLES PARA EL LIFECYCLE ==================
 variable "lifecycle_config" {
   description = "Lifecycle configuration for the S3 bucket"
   type = object({
@@ -22,7 +24,7 @@ variable "lifecycle_config" {
   })
   default = null
 }
-
+#================== ACCIONES PARA MANTENER PRIVADO LOS BUCKET ==========
 variable "block_public_acls" {
   type = bool
 }

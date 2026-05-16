@@ -44,18 +44,34 @@ module "s3_gold" {
 
 module "db_bronze" {
   source = "./modules/glue"
+  #nombre de la base de datos
   name_database = var.db_catalog_bronze
+  # tags de la db
   tags_data_catalog = var.tags_db_brz
+  #arn del role para el crawler
+  crawler_role_arn = aws_iam_role.glue-crawler-role.arn
+  # id del bucket de bronze
+  bucket_id_crawler = module.s3_bronze.bucket-id
+  # nombre del crawler
+  name_crawler = var.crawler_bronze
+  #lista de las tablas del bucket de bronze
+  paths_buckets = var.path_bronze
 }
-module "db_silver" {
-  source = "./modules/glue"
-  name_database = var.db_catalog_silver
-  tags_data_catalog = var.tags_db_slv
-}
-module "db_gold" {
-  source = "./modules/glue"
-  name_database = var.db_catalog_gold
-  tags_data_catalog = var.tags_gold
-}
+
+
+#module "db_silver" {
+#  source = "./modules/glue"
+#  name_database = var.db_catalog_silver
+#  tags_data_catalog = var.tags_db_slv
+
+#  name_crawler = var.crawler_silver
+#}
+#module "db_gold" {
+#  source = "./modules/glue"
+##  name_database = var.db_catalog_gold
+#  tags_data_catalog = var.tags_gold
+#
+#  name_crawler = var.crawler_gold
+#}
 
 #============================= FIN MODULOS AWS GLUE =============================================
