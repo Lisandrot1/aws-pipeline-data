@@ -98,3 +98,33 @@ variable "restrict_public_buckets" {
 }
 
 #=========================================================================
+
+#===========================VARIABLES IAM =================================
+
+variable "name_role_crawler" {
+  type = string
+}
+#==========================================================================
+
+#============== VARIABLES GENERALES DE AWS GLUE ============================
+variable "db_catalog_bronze" {
+  type = string
+}
+variable "db_catalog_silver" {
+  type = string
+}
+variable "db_catalog_gold" {
+  type = string
+}
+
+
+variable "tags_db_brz" {
+  default = {}
+}
+variable "tags_db_slv" {
+  default = {}
+}
+variable "tags_db_gld" {
+  default = {}
+}
+#===========================================================================

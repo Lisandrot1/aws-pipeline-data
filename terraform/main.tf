@@ -38,4 +38,24 @@ module "s3_gold" {
 
   lifecycle_config = var.lifecycle_gold
 }
+#================== FIN MODULOS S3 =======================================================
 
+#======================= INICIO MODULOS AWS GLUE ==========================================
+
+module "db_bronze" {
+  source = "./modules/glue"
+  name_database = var.db_catalog_bronze
+  tags_data_catalog = var.tags_db_brz
+}
+module "db_silver" {
+  source = "./modules/glue"
+  name_database = var.db_catalog_silver
+  tags_data_catalog = var.tags_db_slv
+}
+module "db_gold" {
+  source = "./modules/glue"
+  name_database = var.db_catalog_gold
+  tags_data_catalog = var.tags_gold
+}
+
+#============================= FIN MODULOS AWS GLUE =============================================
