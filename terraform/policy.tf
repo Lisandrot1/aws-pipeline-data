@@ -18,6 +18,24 @@ data "aws_iam_policy_document" "crawler-to-s3" {
         "${module.s3_gold.bucket-arn}/*",
        ]
     }
+    statement {
+      sid    = "AllowGlueCrawlerLogging"
+      effect = "Allow"
+      actions = [
+        "logs:CreateLogGroup",
+        "logs:CreateLogStream",
+        "logs:PutLogEvents"
+      ]
+      resources = ["*"]
+    }
+    statement {
+      sid = "AllowPermisonGlue"
+      effect = "Allow"
+      actions = [ 
+        "glue:*"
+       ]
+      resources = [ "*" ]
+    }
 }
 
 resource "aws_iam_policy" "crawler-to-s3" {
@@ -49,4 +67,8 @@ resource "aws_iam_policy" "ReadS3Lambda" {
   name = var.name_policy_lambda
   policy = data.aws_iam_policy_document.lambda-to-s3.json
 }
+
+
+
+
 #==========================================================================================================

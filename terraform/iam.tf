@@ -42,4 +42,9 @@ resource "aws_iam_role_policy_attachment" "role_policy_lambda" {
   role = aws_iam_role.read_s3_lambda.name
   policy_arn = aws_iam_policy.ReadS3Lambda.arn
 }
+
+resource "aws_iam_role_policy_attachment" "lambda_logs" {
+  role = aws_iam_role.read_s3_lambda.name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+}
 #==========================================================================================================
