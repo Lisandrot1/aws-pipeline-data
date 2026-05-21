@@ -160,6 +160,11 @@ variable "path_bronze" {
   type = list(string)
   description = "Lista de las tablas de bronze para identificar en el crawler"
 }
+
+variable "tags" {
+  default = {}
+  description = "tags para los crawlers"
+}
 #===========================================================================
 
 #============================= VARIABLES PARA LA LAMBDA AWS ==================
@@ -180,3 +185,8 @@ variable "lambda_tags" {
   default = {}
   description = "Tags para la lambda."
 }
+#============================== FIN VARIABLES PARA AWS LAMBDA
+
+#======================= VARIABLES PARA STEP FUNCTIONS =========================================
+
+#============================== FIN VARIABLES PARA STEP FUNCTIONS =============================

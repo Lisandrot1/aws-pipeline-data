@@ -56,6 +56,8 @@ module "db_bronze" {
   name_crawler = var.crawler_bronze
   #lista de las tablas del bucket de bronze
   paths_buckets = var.path_bronze
+  #tags
+  tags_crawlers = var.tags
 }
 
 
@@ -83,3 +85,8 @@ module "data_lambda" {
   name_lambda = var.lambda_name
   tags_lambda = var.lambda_tags
 }
+#======================= FIN VARIABLES PARA AWS LAMBDA =========================================
+
+#======================= VARIABLES PARA STEP FUNCTIONS =========================================
+
+#============================== FIN VARIABLES PARA STEP FUNCTIONS =============================

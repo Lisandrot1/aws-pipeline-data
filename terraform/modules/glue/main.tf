@@ -15,6 +15,8 @@ resource "aws_glue_crawler" "identity_crawlers" {
   name          = var.name_crawler
   role          = var.crawler_role_arn
 
+  tags = var.tags_crawlers
+  
   dynamic "s3_target" {
     for_each = var.paths_buckets
     content {

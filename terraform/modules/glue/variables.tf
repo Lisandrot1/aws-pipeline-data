@@ -26,4 +26,8 @@ variable "bucket_id_crawler" {
   type = string
   description = "Id de los Buckets a identificar"
 }
+variable "tags_crawlers" {
+  default = {}
+  description = "tags para los crawler"
+}
 #======================================================================

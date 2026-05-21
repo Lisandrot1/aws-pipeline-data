@@ -24,7 +24,7 @@ def lambda_handler(event, context):
         ]
         
         for tab in tables:
-            path_prefix = f"{tab}/year=2026/month=05/day=16/"
+            path_prefix = f"{tab}/year={date.year}/month={date.month}/day={date.day}/"
             res = s3.list_objects_v2(Bucket=bucket_name, Prefix=path_prefix)
             
             if "Contents" in res:
@@ -33,11 +33,7 @@ def lambda_handler(event, context):
             else:
                 print("no hay datos del dia tal")
         
-        return hay_datos
-            
-                
-            
-            
+        return hay_datos  
    except Exception as ex:
       print(f"ERROR EN LA LAMBDA DE IDENNTIFICACION: {ex}")
       
