@@ -44,10 +44,11 @@ module "s3_gold" {
 
 module "db_bronze" {
   source = "./modules/glue"
-  #nombre de la base de datos
+  #============== DATA CATALOG ============
   name_database = var.db_catalog_bronze
-  # tags de la db
   tags_data_catalog = var.tags_db_brz
+  # ======================================
+  #============== AWS GLUE CRAWLER ============
   #arn del role para el crawler
   crawler_role_arn = aws_iam_role.glue-crawler-role.arn
   # id del bucket de bronze
@@ -58,6 +59,11 @@ module "db_bronze" {
   paths_buckets = var.path_bronze
   #tags
   tags_crawlers = var.tags
+  # ======================================
+  #============= AWS GLUE JOB ============
+  name_job = var.job_name
+  tags_jobs = var.job_tags
+  # ======================================
 }
 
 

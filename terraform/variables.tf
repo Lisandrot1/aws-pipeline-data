@@ -190,3 +190,19 @@ variable "lambda_tags" {
 #======================= VARIABLES PARA STEP FUNCTIONS =========================================
 
 #============================== FIN VARIABLES PARA STEP FUNCTIONS =============================
+
+
+#============================ AWS GLUE JOB ============================================================
+variable "name_rol_glue" {
+  type = string
+  description = "nombre rol para aws glue job"
+}
+variable "job_name" {
+  type = string
+  description = "nombre del job de glue"
+}
+variable "job_tags" {
+  default = {}
+  description = "tags para el job"
+}
+#==========================================================================================================
