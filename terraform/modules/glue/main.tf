@@ -25,16 +25,44 @@ resource "aws_glue_crawler" "identity_crawlers" {
   }
 }
 #=============================   RECURSO AWS GLUE JOBS ETL ================================
+resource "aws_s3_object" "glue_scripts" {
+  bucket = var.name_bucket_script
+  key = "scripts/slv_glue_job.py"
+  source = "${path.root}/../src/glue/slv_glue_job.py"
+  etag = filemd5("${path.root}/../src/glue/slv_glue_job.py")
+}
+
 resource "aws_glue_job" "job_etl" {
-  name = ""
-  description = "ETL job"
+  name = var.name_job
+  description = "ETL job para procesar datos de bronze a silver."
+  role_arn = var.role_glue_job_arn
+  max_retries = 1
+  glue_version = "5.0"
+  timeout = 20
+  number_of_workers = 2
+  worker_type = "G.1X"
+  execution_class = "STANDARD"
+
   command {
-    name = ""
-    script_location = ""
-    python_version = ""
+    name = "glueetl"
+    script_location = "s3://${aws_s3_object.glue_scripts.bucket}/${aws_s3_object.glue_scripts.key}"
+    python_version = "3"
   }
-  role_arn = ""
-  tags = {}
+
+  default_arguments = {
+    "--job-language"                     = "python"
+    "--continuous-log-logGroup"          = "/aws-glue/jobs/${var.name_job}"
+    "--enable-continuous-cloudwatch-log" = "true"
+    "--enable-continuous-log-filter"     = "true"
+    "--enable-metrics"                   = "true"
+    "--enable-auto-scaling"              = "true"
+    "--job-bookmark-option"              = "job-bookmark-enable"
+    "--enable-observability-metrics"     = "true"
+    "--enable-glue-datacatalog"          = "true"
+    "--conf"                             = "spark.sql.parquet.enableVectorizedReader=true"
+  }
+
+  tags = var.tags_jobs
   
 }
 #==========================================================================================

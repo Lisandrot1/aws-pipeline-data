@@ -38,6 +38,16 @@ module "s3_gold" {
 
   lifecycle_config = var.lifecycle_gold
 }
+
+module "s3_scripts" {
+  source = "./modules/s3"
+  bucket_name = var.bucket_glue
+
+  block_public_acls       = var.block_public_acls
+  block_public_policy     = var.block_public_policy
+  ignore_public_acls      = var.ignore_public_acls
+  restrict_public_buckets = var.restrict_public_buckets
+}
 #================== FIN MODULOS S3 =======================================================
 
 #======================= INICIO MODULOS AWS GLUE ==========================================
@@ -62,8 +72,11 @@ module "db_bronze" {
   tags_crawlers = var.tags
   # ======================================
   #============= AWS GLUE JOB ============
-  #name_job = var.job_name
-  #tags_jobs = var.job_tags
+  name_job = var.job_name_glue
+  tags_jobs = var.job_tags_glue
+  role_glue_job_arn = aws_iam_role.glue_job_role.arn
+
+  name_bucket_script = module.s3_scripts.bucket_id
   # ======================================
 }
 

@@ -32,13 +32,20 @@ variable "tags_crawlers" {
 }
 #======================================================================
 #=============================== VARIABLES AWS GLUE JOB =========================
-#variable "name_job" {
-#  type = string
-#  description = "Variable para asiganarle valor al nombre del job"
-#}
-#variable "tags_jobs" {
-#  default = {}
-#  description = "Poner las tags del job etl"
-#}
-
+variable "name_job" {
+  type = string
+  description = "Variable para asiganarle valor al nombre del job"
+}
+variable "tags_jobs" {
+  default = {}
+  description = "Poner las tags del job etl"
+}
+variable "role_glue_job_arn" {
+  type = string
+  description = "nombre del role para sacar el arn"
+}
+variable "name_bucket_script" {
+  type = string
+  description = "bucket para insertar los script de glue"
+}
 #================================================================================

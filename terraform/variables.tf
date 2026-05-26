@@ -197,16 +197,20 @@ variable "name_rol_glue" {
   type = string
   description = "nombre rol para aws glue job"
 }
-variable "job_name" {
-  type = string
-  description = "nombre del job de glue"
-}
-variable "job_tags" {
-  default = {}
-  description = "tags para el job"
-}
 variable "name_policy_glue_job" {
   type = string
   description = "nombre del policy para glue job"
+}
+variable "job_name_glue" {
+  type = string
+  description = "nombre del job de glue"
+}
+variable "job_tags_glue" {
+  default = {}
+  description = "tags para el job"
+}
+variable "bucket_glue" {
+  type = string
+  description = "bucket para insertar los scripts de glue"
 }
 #==========================================================================================================
