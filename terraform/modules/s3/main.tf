@@ -1,10 +1,9 @@
 resource "aws_s3_bucket" "buckets" {
   bucket = var.bucket_name
-  
   tags = var.tags
 }
 
-resource "aws_s3_bucket_public_access_block" "buckets-publics" {
+resource "aws_s3_bucket_public_access_block" "buckets_publics" {
   bucket = aws_s3_bucket.buckets.id
   
   block_public_acls       = var.block_public_acls
@@ -14,14 +13,14 @@ resource "aws_s3_bucket_public_access_block" "buckets-publics" {
 }
 
 
-resource "aws_s3_bucket_versioning" "buckets-versioning" {
+resource "aws_s3_bucket_versioning" "buckets_versioning" {
   bucket = aws_s3_bucket.buckets.id
   versioning_configuration {
     status = "Enabled"
   }
 }
 
-resource "aws_s3_bucket_lifecycle_configuration" "bucket-lifecycle" {
+resource "aws_s3_bucket_lifecycle_configuration" "bucket_lifecycle" {
   count = var.lifecycle_config != null ? 1 : 0
 
   bucket = var.bucket_name

@@ -32,13 +32,13 @@ variable "tags_crawlers" {
 }
 #======================================================================
 #=============================== VARIABLES AWS GLUE JOB =========================
-variable "name_job" {
-  type = string
-  description = "Variable para asiganarle valor al nombre del job"
-}
-variable "tags_jobs" {
-  default = {}
-  description = "Poner las tags del job etl"
-}
+#variable "name_job" {
+#  type = string
+#  description = "Variable para asiganarle valor al nombre del job"
+#}
+#variable "tags_jobs" {
+#  default = {}
+#  description = "Poner las tags del job etl"
+#}
 
 #================================================================================

@@ -50,9 +50,10 @@ module "db_bronze" {
   # ======================================
   #============== AWS GLUE CRAWLER ============
   #arn del role para el crawler
-  crawler_role_arn = aws_iam_role.glue-crawler-role.arn
+  crawler_role_arn = aws_iam_role.glue_crawler_role.arn
+
   # id del bucket de bronze
-  bucket_id_crawler = module.s3_bronze.bucket-id
+  bucket_id_crawler = module.s3_bronze.bucket_id
   # nombre del crawler
   name_crawler = var.crawler_bronze
   #lista de las tablas del bucket de bronze
@@ -61,8 +62,8 @@ module "db_bronze" {
   tags_crawlers = var.tags
   # ======================================
   #============= AWS GLUE JOB ============
-  name_job = var.job_name
-  tags_jobs = var.job_tags
+  #name_job = var.job_name
+  #tags_jobs = var.job_tags
   # ======================================
 }
 

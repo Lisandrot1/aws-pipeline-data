@@ -205,4 +205,8 @@ variable "job_tags" {
   default = {}
   description = "tags para el job"
 }
+variable "name_policy_glue_job" {
+  type = string
+  description = "nombre del policy para glue job"
+}
 #==========================================================================================================

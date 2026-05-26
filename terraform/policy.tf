@@ -1,5 +1,5 @@
 #======================================== POLICY  AWS GLUE CRAWLER =====================
-data "aws_iam_policy_document" "crawler-to-s3" {
+data "aws_iam_policy_document" "crawler_to_s3" {
     statement {
       sid = "ReadOnPermisoS3"
       effect = "Allow"
@@ -10,12 +10,12 @@ data "aws_iam_policy_document" "crawler-to-s3" {
         "s3:GetBucketLocation"
        ]
        resources = [
-        "${module.s3_bronze.bucket-arn}",
-        "${module.s3_bronze.bucket-arn}/*",
-        "${module.s3_silver.bucket-arn}",
-        "${module.s3_silver.bucket-arn}/*",
-        "${module.s3_gold.bucket-arn}",
-        "${module.s3_gold.bucket-arn}/*",
+        "${module.s3_bronze.bucket_arn}",
+        "${module.s3_bronze.bucket_arn}/*",
+        "${module.s3_silver.bucket_arn}",
+        "${module.s3_silver.bucket_arn}/*",
+        "${module.s3_gold.bucket_arn}",
+        "${module.s3_gold.bucket_arn}/*",
        ]
     }
     statement {
@@ -38,16 +38,16 @@ data "aws_iam_policy_document" "crawler-to-s3" {
     }
 }
 
-resource "aws_iam_policy" "crawler-to-s3" {
+resource "aws_iam_policy" "crawler_to_s3" {
   name = "permisos-crawler-s3"
-  policy = data.aws_iam_policy_document.crawler-to-s3.json
+  policy = data.aws_iam_policy_document.crawler_to_s3.json
 }
 
 #==========================================================================================================
 #==================================== POLICY AWS LAMBDA ===================================================
 
 
-data "aws_iam_policy_document" "lambda-to-s3" {
+data "aws_iam_policy_document" "lambda_to_s3" {
   statement {
     sid = "LeerDataS3"
     effect = "Allow"
@@ -57,15 +57,15 @@ data "aws_iam_policy_document" "lambda-to-s3" {
         "s3:GetBucketLocation"
      ]
     resources = [ 
-        "${module.s3_bronze.bucket-arn}",
-        "${module.s3_bronze.bucket-arn}/*"
+        "${module.s3_bronze.bucket_arn}",
+        "${module.s3_bronze.bucket_arn}/*"
      ]
   }
 }
 
 resource "aws_iam_policy" "ReadS3Lambda" {
   name = var.name_policy_lambda
-  policy = data.aws_iam_policy_document.lambda-to-s3.json
+  policy = data.aws_iam_policy_document.lambda_to_s3.json
 }
 
 
@@ -81,13 +81,40 @@ data "aws_iam_policy_document" "job_etl_policy" {
     sid = "jobetlecommerce"
     effect = "Allow"
     actions = [
-      
+      "s3:PutObject",
+			"s3:ListBucket",
+      "s3:GetBucketLocation"
     ]
     resources = [
-
+      "${module.s3_bronze.bucket_arn}",
+      "${module.s3_bronze.bucket_arn}/*"
     ]
+  }
+
+  statement {
+    sid = "AllglueCatalog"
+    effect = "Allow"
+    actions = [
+      "glue:*"
+    ]
+    resources = [ "*" ]
+  }
+
+  statement {
+    sid = "glueLogsCloudwatch"
+    effect = "Allow"
+    actions = [
+      "logs:CreateLogGroup",
+      "logs:CreateLogStream",
+      "logs:PutLogEvents"
+    ]
+    resources = [ "*" ]
   }
 }
 
+resource "aws_iam_policy" "policy_glue_all_permisos" {
+  name = var.name_policy_glue_job
+  policy = data.aws_iam_policy_document.job_etl_policy.json
+}
 
 #==========================================================================================================

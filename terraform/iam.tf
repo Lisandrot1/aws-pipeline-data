@@ -1,6 +1,6 @@
 # ================================ ROLE AWS GLUE CRAWLER ===============================================
 
-resource "aws_iam_role" "glue-crawler-role" {
+resource "aws_iam_role" "glue_crawler_role" {
   name = var.name_role_crawler
   description = "role para que el crawler pueda leer a s3"
   assume_role_policy = jsonencode({
@@ -16,9 +16,9 @@ resource "aws_iam_role" "glue-crawler-role" {
   })
 }
 
-resource "aws_iam_role_policy_attachment" "attach-s3-to-crawler" {
-  role       = aws_iam_role.glue-crawler-role.name
-  policy_arn = aws_iam_policy.crawler-to-s3.arn
+resource "aws_iam_role_policy_attachment" "attach_s3_to_crawler" {
+  role       = aws_iam_role.glue_crawler_role.name
+  policy_arn = aws_iam_policy.crawler_to_s3.arn
 
 }
 #===============================================================================
@@ -68,6 +68,10 @@ resource "aws_iam_role" "glue_job_role" {
       }
     ]
   })
+}
+resource "aws_iam_role_policy_attachment" "glue_jobs_permisos" {
+  role = aws_iam_role.glue_job_role.name
+  policy_arn = aws_iam_policy.policy_glue_all_permisos.arn
 }
 
 #==========================================================================================================
