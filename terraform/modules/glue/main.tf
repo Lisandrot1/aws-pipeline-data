@@ -25,17 +25,16 @@ resource "aws_glue_crawler" "identity_crawlers" {
   }
 }
 #=============================   RECURSO AWS GLUE JOBS ETL ================================
-#resource "aws_glue_job" "job_etl" {
-#  name = ""
-#  description = "ETL job"
-#  command {
-#    name = ""
-#    script_location = ""
-#    python_version = ""
-##  }
-#  role_arn = ""
-#  tags = {}
+resource "aws_glue_job" "job_etl" {
+  name = ""
+  description = "ETL job"
+  command {
+    name = ""
+    script_location = ""
+    python_version = ""
+  }
+  role_arn = ""
+  tags = {}
   
-  
-#}
+}
 #==========================================================================================
