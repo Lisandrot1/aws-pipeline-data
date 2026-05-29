@@ -3,17 +3,8 @@
 *.tfstate.*
 *.tfstate.backup
 .terraform/
-crash.log
-override.tf
-override.tf.json
-*.tfvars
-*.tfvars.json
-terraform.tfvars.json
-*.tfplan
-*.tfplan.*
 .terraform.lock.hcl
-.terraformrc
-.terraformrc.yaml
+
 
 venv/
 __pycache__
