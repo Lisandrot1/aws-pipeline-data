@@ -143,7 +143,10 @@ variable "tags_db_gld" {
   description = "Tags para la db de metadatos de gold"
 }
 #=========================
-
+variable "crawler_bronze" {
+  type = string
+  description = "Nombre del crawler de bronze"
+}
 variable "crawler_silver" {
   type = string
   description = "Nombre del crawler de silver"

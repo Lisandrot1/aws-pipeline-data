@@ -12,7 +12,7 @@ resource "aws_glue_catalog_database" "databases_metadatos" {
 resource "aws_glue_crawler" "identity_crawlers" {
   database_name = aws_glue_catalog_database.databases_metadatos.name
   description   = "Crawler para Identificar la data de los buckets"
-  name          = var.name_crawler != "" ? 1 : 0
+  name          = var.name_crawler
   role          = var.crawler_role_arn
 
   tags = var.tags_crawlers

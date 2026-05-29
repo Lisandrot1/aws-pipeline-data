@@ -105,7 +105,7 @@ tags_db_gld = {
   Capa = "Gold"
 }
 
-
+crawler_bronze = "crawler-identity-brz"
 crawler_silver = "crawler-identity-slv"
 crawler_gold = "crawler-identity-gld"
 
