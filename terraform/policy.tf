@@ -61,6 +61,21 @@ data "aws_iam_policy_document" "lambda_to_s3" {
         "${module.s3_bronze.bucket_arn}/*"
      ]
   }
+  statement {
+    sid = "EscribirCatalogo"
+    effect = "Allow"
+    actions = [ 
+      "glue:GetDatabase",
+      "glue:CreateTable",
+      "glue:GetTable",
+      "glue:UpdateTable",
+      "glue:CreatePartition"
+     ]
+     resources = [ 
+      "${module.db_bronze.catalgoo_db_arn}" ,
+      "${module.db_bronze.catalgoo_db_arn}/*" 
+      ]
+  }
 }
 
 resource "aws_iam_policy" "ReadS3Lambda" {
