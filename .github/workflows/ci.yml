@@ -39,7 +39,7 @@ jobs:
           
           run: |
             cd terraform
-            terraform plan
+            terraform plan -var-file="terraform.tfvars" -input=false
 
     
     
