@@ -11,7 +11,11 @@ on:
 jobs:
   validate:
     runs-on : ubuntu-latest
-
+    env:
+      BUCKET_NAME: ${{ secrets.BUCKET_NAME }}
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      AWS_DEFAULT_REGION: "us-east-1"
     steps:
         - name: Descargar Codigo
           uses: actions/checkout@v4
@@ -19,12 +23,12 @@ jobs:
         - name: Configurar Terraform
           uses: hashicorp/setup-terraform@v4
           with:
-            terraform_version: "1.15.4"
+            terraform_version: "1.15.1"
         
         - name: Terraform Init
           run: |
             cd terraform
-            terraform init -backend=false
+            terraform init
 
         - name: Terraform Validate
           run: |
@@ -32,11 +36,10 @@ jobs:
             terraform validate
 
         - name: Terraform  Plan
-          env:
-           BUCKET_NAME: ${{ secrets.BUCKET_NAME }}
-           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-           AWS_DEFAULT_REGION: "us-east-1"
+          
           run: |
             cd terraform
             terraform plan
+
+    
+    
