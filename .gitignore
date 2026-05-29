@@ -8,7 +8,6 @@ override.tf
 override.tf.json
 *.tfvars
 *.tfvars.json
-#terraform.tfvars
 terraform.tfvars.json
 *.tfplan
 *.tfplan.*
