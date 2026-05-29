@@ -65,7 +65,7 @@ module "db_bronze" {
   # id del bucket de bronze
   bucket_id_crawler = module.s3_bronze.bucket_id
   # nombre del crawler
-  name_crawler = var.crawler_bronze
+  name_crawler = ""
   #lista de las tablas del bucket de bronze
   paths_buckets = var.path_bronze
   #tags
