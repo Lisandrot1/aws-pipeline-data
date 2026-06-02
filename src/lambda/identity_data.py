@@ -13,6 +13,7 @@ def lambda_handler(event, context):
    date = parts_date()
    try:
         s3 = boto3.client("s3")
+        
         hay_datos = False
         bucket_name = "brz-logs-ecommerce"
         tables = [
