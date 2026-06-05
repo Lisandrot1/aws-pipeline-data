@@ -21,7 +21,13 @@ resource "aws_glue_crawler" "identity_crawlers" {
     for_each = var.paths_buckets
     content {
       path = "s3://${var.bucket_id_crawler}/${s3_target.value}"
+      
+      sample_size = 3
     }
+    
+  }
+  recrawl_policy {
+    recrawl_behavior = "CRAWL_NEW_FOLDERS_ONLY"
   }
 }
 #=============================   RECURSO AWS GLUE JOBS ETL ================================
