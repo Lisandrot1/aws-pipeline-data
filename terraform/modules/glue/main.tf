@@ -29,6 +29,10 @@ resource "aws_glue_crawler" "identity_crawlers" {
   recrawl_policy {
     recrawl_behavior = "CRAWL_NEW_FOLDERS_ONLY"
   }
+  schema_change_policy {
+    delete_behavior = "LOG"
+    update_behavior = "LOG"
+  }
 }
 #=============================   RECURSO AWS GLUE JOBS ETL ================================
 resource "aws_s3_object" "glue_scripts" {
