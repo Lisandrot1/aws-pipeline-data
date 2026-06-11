@@ -70,6 +70,8 @@ resource "aws_glue_job" "job_etl" {
     "--enable-observability-metrics"     = "true"
     "--enable-glue-datacatalog"          = "true"
     "--conf"                             = "spark.sql.parquet.enableVectorizedReader=true"
+    "--JOB_NAME"                         = var.name_job
+    "--DATABASE"                         = var.name_database
   }
 
   tags = var.tags_jobs
