@@ -98,7 +98,8 @@ data "aws_iam_policy_document" "job_etl_policy" {
     actions = [
       "s3:PutObject",
 			"s3:ListBucket",
-      "s3:GetBucketLocation"
+      "s3:GetBucketLocation",
+      "s3:GetObject"
     ]
     resources = [
       "${module.s3_bronze.bucket_arn}",
@@ -124,6 +125,14 @@ data "aws_iam_policy_document" "job_etl_policy" {
       "logs:PutLogEvents"
     ]
     resources = [ "*" ]
+  }
+  statement {
+    sid = "passrole"
+    effect = "Allow"
+    actions = [
+      "iam:PassRole"
+    ]
+    resources = [ "arn:aws:iam::232791540625:role/glue-job-role" ]
   }
 }
 
