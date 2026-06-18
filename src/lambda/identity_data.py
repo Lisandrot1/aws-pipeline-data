@@ -10,7 +10,7 @@ def parts_date():
    return fecha_procesar
 
 def lambda_handler(event, context):
-   date = parts_date()
+   fecha = parts_date()
    try:
         s3 = boto3.client("s3")
         
@@ -18,21 +18,22 @@ def lambda_handler(event, context):
         bucket_name = "brz-logs-ecommerce"
         tables = [
             "api_request_logs",
+            "inventory_movement_logs",
             "order_processing_logs",
-            "invetory_movement_logs",
             "payment_transaction_logs",
             "user_session_logs"
         ]
         
         for tab in tables:
-            path_prefix = f"{tab}/year={date.year}/month={date.month}/day={date.day}/"
+            path_prefix = f"{tab}/year={fecha.year}/month={fecha.month:02d}/day={fecha.day}/"
             res = s3.list_objects_v2(Bucket=bucket_name, Prefix=path_prefix)
+            
             
             if "Contents" in res:
                 hay_datos = True
-                print("Datos del dia tal encontrados")
+                print(f"{hay_datos}: Datos del dia tal encontrados")
             else:
-                print(f"no hay datos del dia tal: {date.day}")
+                print(f"no hay datos en: {tab} y dia: {fecha.day}")
         
         return hay_datos  
    except Exception as ex:
