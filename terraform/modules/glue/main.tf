@@ -71,7 +71,9 @@ resource "aws_glue_job" "job_etl" {
     "--enable-glue-datacatalog"          = "true"
     "--conf"                             = "spark.sql.parquet.enableVectorizedReader=true"
     "--JOB_NAME"                         = var.name_job
-    "--DATABASE"                         = var.name_database
+    "--DATABASE_BRONZE"                  = var.name_database
+    "--DATABASE_SILVER"                  = var.name_database
+  
   }
 
   tags = var.tags_jobs
