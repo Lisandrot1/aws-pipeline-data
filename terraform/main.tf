@@ -59,19 +59,26 @@ module "db_bronze" {
   tags_data_catalog = var.tags_db_brz
   # ======================================
   #============== AWS GLUE CRAWLER ============
-  #arn del role para el crawler
-  crawler_role_arn = aws_iam_role.glue_crawler_role.arn
+  create_crawler = true
+  # nombre del crawler
+  name_crawler = var.crawler_bronze
 
   # id del bucket de bronze
   bucket_id_crawler = module.s3_bronze.bucket_id
-  # nombre del crawler
-  name_crawler = var.crawler_bronze
+
+  #arn del role para el crawler
+  crawler_role_arn = aws_iam_role.glue_crawler_role.arn
+
   #lista de las tablas del bucket de bronze
   paths_buckets = var.path_bronze
+
   #tags
   tags_crawlers = var.tags
   # ======================================
   #============= AWS GLUE JOB ============
+  create_job = true
+  script_name_file = "slv_glue_job.py"
+  script_name_path = "slv_glue_job.py"
   name_job = var.job_name_glue
   tags_jobs = var.job_tags_glue
   role_glue_job_arn = aws_iam_role.glue_job_role.arn
@@ -80,21 +87,26 @@ module "db_bronze" {
   # ======================================
 }
 
+module "db_silver" {
+  source = "./modules/glue"
+  name_database = var.db_catalog_silver
+  tags_data_catalog = var.tags_db_slv
+}
 
-#module "db_silver" {
-#  source = "./modules/glue"
-#  name_database = var.db_catalog_silver
-#  tags_data_catalog = var.tags_db_slv
+module "db_gold" {
+  source = "./modules/glue"
+  name_database = var.db_catalog_gold
+  tags_data_catalog = var.tags_gold
 
-#  name_crawler = var.crawler_silver
-#}
-#module "db_gold" {
-#  source = "./modules/glue"
-##  name_database = var.db_catalog_gold
-#  tags_data_catalog = var.tags_gold
-#
-#  name_crawler = var.crawler_gold
-#}
+  # =================== AWS GLUE JOB =======
+  create_job = true
+  script_name_file = "gld_glue_job.py"
+  script_name_path = "gld_glue_job.py"
+  name_job = var.gld_job_ecommerce
+  tags_jobs = var.gld_tags_glue
+  role_glue_job_arn = aws_iam_role.glue_job_role.arn
+  name_bucket_script = module.s3_scripts.bucket_id
+}
 
 #============================= FIN MODULOS AWS GLUE =============================================
 

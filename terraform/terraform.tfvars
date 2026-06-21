@@ -139,6 +139,7 @@ lambda_tags = {
 #======================= VARIABLES PARA AWS GLUE JOB =========================================
 name_rol_glue = "glue-job-role"
 job_name_glue = "job-ecommerce-logs"
+gld_job_ecommerce = "gld-ecommerce-job"
 
 job_tags_glue = {
   Name       = "Glue Job Procesar"
@@ -147,6 +148,15 @@ job_tags_glue = {
   Capa       = "Glue"
   Action     = "Procesar"
 }
+gld_tags_glue = {
+  Name       = "Glue Job GOLD"
+  Owner      = "TORRES IAM"
+  Enviroment = "prod"
+  Capa       = "Glue"
+  Action     = "Procesar"
+}
 name_policy_glue_job = "policy-job-all-permisos"
 bucket_glue = "logs-glue-scripts"
+
+
 #============================== FIN VARIABLES PARA AWS GLUE JOB =============================

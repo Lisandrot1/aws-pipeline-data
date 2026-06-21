@@ -209,6 +209,14 @@ variable "job_tags_glue" {
   default = {}
   description = "tags para el job"
 }
+variable "gld_job_ecommerce" {
+  type = string
+  description = "nombre job para gold"
+}
+variable "gld_tags_glue" {
+  default = {}
+  description = "tags para el job de gold"
+}
 variable "bucket_glue" {
   type = string
   description = "bucket para insertar los scripts de glue"
