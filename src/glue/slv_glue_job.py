@@ -9,9 +9,7 @@ from awsglue.dynamicframe import DynamicFrame
 from pyspark.sql import functions as F
 
 args = getResolvedOptions(sys.argv, [
-    "JOB_NAME",
-    "DATABASE_BRONZE",
-    "DATABASE_SILVER"
+    "JOB_NAME"
 ])
 
 sc = SparkContext.getOrCreate()
@@ -118,8 +116,21 @@ def convert_type_data(dyf: F.DataFrame, table_name: str) -> F.DataFrame:
     df = dyf.select(new_columns)
     return df
 
-TABLES = ["api_request_logs", "inventory_movement_logs", "order_processing_logs", "payment_transaction_logs", "user_session_logs"]
 
+def drop_duplicates(dyf: F.DataFrame, table_name: str) -> F.DataFrame:
+    if table_name not in NEW_SCHEMA_CONFIG:
+        return dyf
+    
+    df = dyf
+    table_config = NEW_SCHEMA_CONFIG[table_name]
+    if "id" in table_config:
+        pk_column = table_config["id"]
+        if pk_column in dyf.columns:
+            df = df.filter(F.col(pk_column).isNotNull()).dropDuplicates(subset=[pk_column])
+    
+    return df
+
+TABLES = ["api_request_logs", "inventory_movement_logs", "order_processing_logs", "payment_transaction_logs", "user_session_logs"]
 for tables in TABLES:
     dyf = glueContext.create_dynamic_frame.from_catalog(
         database="database-bronze",
@@ -129,16 +140,19 @@ for tables in TABLES:
     # convertir dinamicframe a dataFrame
     df = dyf.toDF()
 
-    # aplanar Datos
+    # Aplanar Datos
     df = flatten_columns(df)
     
     # Cambiar Tipos de Datos
     df = convert_type_data(df, tables)
     
+    # Eliminar Duplicados
+    df = drop_duplicates(df, tables)
+    
     # Rellenar Datos Nulos
     df = fillna_columns(df)
     
-    dyf = DynamicFrame.fromDF(df, glueContext, "dyn_end")
+    dyf = DynamicFrame.fromDF(df, glueContext, "dyf_end")
     
     sink = glueContext.getSink(
         connection_type="s3",
