@@ -107,8 +107,9 @@ data "aws_iam_policy_document" "job_etl_policy" {
       "${module.s3_silver.bucket_arn}",
       "${module.s3_silver.bucket_arn}/*",
       "${module.s3_gold.bucket_arn}",
-      "${module.s3_gold.bucket_arn}/*"
-
+      "${module.s3_gold.bucket_arn}/*",
+      "${module.s3_scripts.bucket_arn}",
+      "${module.s3_scripts.bucket_arn}/*"
     ]
   }
 
