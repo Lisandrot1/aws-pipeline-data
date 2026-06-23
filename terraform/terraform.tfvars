@@ -162,3 +162,10 @@ bucket_glue = "logs-glue-scripts"
 
 
 #============================== FIN VARIABLES PARA AWS GLUE JOB =============================
+#============================== INICIO VARIABLES PARA EVENTBRIGDE =============================
+event_drigde_name = "orch-cron-etl-ecommerce"
+
+name_policy_event = "policy-eventbrigde"
+
+name_role_event = "role-eventbrige-cron"
+#============================== FIN VARIABLES PARA EVENTBRIGDE =============================

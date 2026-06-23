@@ -234,3 +234,20 @@ variable "bucket_glue" {
   description = "bucket para insertar los scripts de glue"
 }
 #==========================================================================================================
+
+#============================ EVENTBRIGDE VARIABLES =======================================================
+
+variable "event_drigde_name" {
+  type = string
+  description = "nombre del cron para el step"
+}
+variable "name_policy_event" {
+  type = string
+  description = "nombre del policy para eventbrigde"
+}
+
+variable "name_role_event" {
+  type = string
+  description = "nombre del rol para eventbrigde"
+}
+#==========================================================================================================

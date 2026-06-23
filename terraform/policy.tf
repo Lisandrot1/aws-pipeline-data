@@ -161,13 +161,37 @@ data "aws_iam_policy_document" "orch_step_etl" {
   statement {
     sid = "invokeGlue"
     effect = "Allow"
-    actions = ["glue:StartJobRun"]
-    resources = flatten([module.db_bronze.jobs_etl_arn,
-    module.db_gold.jobs_etl_arn])
+    actions = [
+      "glue:StartJobRun"
+    ]
+    resources = flatten([
+      module.db_bronze.jobs_etl_arn,
+      module.db_gold.jobs_etl_arn
+    ])
   }
 }
+
 resource "aws_iam_policy" "policy_step_functions_orch" {
   name = var.name_policy_step_functions
   policy = data.aws_iam_policy_document.orch_step_etl.json
+}
+#==========================================================================================================
+#============================= POLICY EVENTBRIGDE =========================================================
+data "aws_iam_policy_document" "policy_eventbrigde" {
+  statement {
+    sid = "eventbrigde"
+    effect = "Allow"
+    actions = [
+      "states:StartExecution"
+    ]
+    resources = [
+      module.step_functions_orch.step_arn
+    ]
+  }
+}
+resource "aws_iam_policy" "eventbrigde_policy" {
+  name = var.name_policy_event
+  policy = data.aws_iam_policy_document.policy_eventbrigde.json
+
 }
 #==========================================================================================================

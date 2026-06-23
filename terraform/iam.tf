@@ -95,3 +95,23 @@ resource "aws_iam_role_policy_attachment" "step_orch_role" {
   policy_arn = aws_iam_policy.policy_step_functions_orch.arn
 }
 #==========================================================================================================
+#================================  EVENTBRIGDE ROLE =================================================
+resource "aws_iam_role" "eventbrigde_role" {
+  name = var.name_role_event
+  description = "role para eventbrigde"
+  assume_role_policy = jsonencode({
+    Statement = [{
+      Action = "sts:AssumeRole"
+      Effect = "Allow"
+      Principal = {
+        Service : "scheduler.amazonaws.com"
+      }
+    }]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "eventbrigde_role_policy" {
+  role = aws_iam_role.eventbrigde_role.name
+  policy_arn = aws_iam_policy.eventbrigde_policy.arn
+}
+#==========================================================================================================
