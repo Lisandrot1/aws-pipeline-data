@@ -75,3 +75,23 @@ resource "aws_iam_role_policy_attachment" "glue_jobs_permisos" {
 }
 
 #==========================================================================================================
+#===================================== STEP FUNCTIONS ROLE ================================================
+resource "aws_iam_role" "orch_step_role" {
+  name = var.name_role_step_functions
+  description = "role del recurso step functions para la orquestacion"
+  assume_role_policy = jsonencode({
+    Statement = [{
+      Action  = "sts:AssumeRole"
+      Effect = "Allow"
+      Principal = {
+        Service = "states.amazonaws.com"
+      }
+    }]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "step_orch_role" {
+  role = aws_iam_role.orch_step_role.name
+  policy_arn = aws_iam_policy.policy_step_functions_orch.arn
+}
+#==========================================================================================================

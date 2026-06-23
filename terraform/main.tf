@@ -120,5 +120,10 @@ module "data_lambda" {
 #======================= FIN VARIABLES PARA AWS LAMBDA =========================================
 
 #======================= VARIABLES PARA STEP FUNCTIONS =========================================
+module "step_functions_orch" {
+  source = "./modules/stepfunction"
+  name_step_functions = var.step_functions_name
 
+  role_arn_step_functions = aws_iam_role.orch_step_role.arn
+}
 #============================== FIN VARIABLES PARA STEP FUNCTIONS =============================

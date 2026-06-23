@@ -134,7 +134,9 @@ lambda_tags = {
 }
 #==============================================================================
 #======================= VARIABLES PARA STEP FUNCTIONS =========================================
-
+step_functions_name = "orch-logs-ecommerce"
+name_role_step_functions = "orch-logs-ecommerce-step"
+name_policy_step_functions = "policy_step_functions_orch"
 #============================== FIN VARIABLES PARA STEP FUNCTIONS =============================
 #======================= VARIABLES PARA AWS GLUE JOB =========================================
 name_rol_glue = "glue-job-role"

@@ -1,0 +1,11 @@
+{
+  "Comment": "Estructura inicial temporal de la Step Function",
+  "StartAt": "Placeholder",
+  "States": {
+    "Placeholder": {
+      "Type": "Pass",
+      "Result": "Step Function creada con exito, esperando flujo real.",
+      "End": true
+    }
+  }
+}

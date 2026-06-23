@@ -189,6 +189,18 @@ variable "lambda_tags" {
 
 #======================= VARIABLES PARA STEP FUNCTIONS =========================================
 
+variable "step_functions_name" {
+  type = string
+  description = "nombre de step funcions para la orquestacion"
+}
+variable "name_role_step_functions" {
+  type = string
+  description = "nombre del rol del recurso step functions"
+}
+variable "name_policy_step_functions" {
+  type = string
+  description = "policy de step functions"
+}
 #============================== FIN VARIABLES PARA STEP FUNCTIONS =============================
 
 

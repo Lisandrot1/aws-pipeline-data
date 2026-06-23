@@ -148,3 +148,26 @@ resource "aws_iam_policy" "policy_glue_all_permisos" {
 }
 
 #==========================================================================================================
+#=============================== STEP FUNCTIONS ORCHESTRATOR ==============================================
+data "aws_iam_policy_document" "orch_step_etl" {
+  statement {
+    sid = "invokeLambda"
+    effect = "Allow"
+    actions = [
+      "lambda:InvokeFunction"
+    ]
+    resources = [ "${module.data_lambda.lambda_arn}" ]
+  }
+  statement {
+    sid = "invokeGlue"
+    effect = "Allow"
+    actions = ["glue:StartJobRun"]
+    resources = flatten([module.db_bronze.jobs_etl_arn,
+    module.db_gold.jobs_etl_arn])
+  }
+}
+resource "aws_iam_policy" "policy_step_functions_orch" {
+  name = var.name_policy_step_functions
+  policy = data.aws_iam_policy_document.orch_step_etl.json
+}
+#==========================================================================================================
