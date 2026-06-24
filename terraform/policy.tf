@@ -188,6 +188,17 @@ data "aws_iam_policy_document" "policy_eventbrigde" {
       module.step_functions_orch.step_arn
     ]
   }
+  statement {
+    sid = "glueLogsCloudwatch"
+    effect = "Allow"
+    actions = [
+      "logs:CreateLogGroup",
+      "logs:CreateLogStream",
+      "logs:PutLogEvents"
+    ]
+    resources = [ "*" ]
+  }
+
 }
 resource "aws_iam_policy" "eventbrigde_policy" {
   name = var.name_policy_event
