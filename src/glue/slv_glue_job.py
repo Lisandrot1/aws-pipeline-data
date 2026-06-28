@@ -7,6 +7,17 @@ from awsglue.job import Job
 from pyspark.sql.types import StringType, IntegerType, DoubleType, FloatType, TimestampType, DecimalType, StructType, LongType
 from awsglue.dynamicframe import DynamicFrame
 from pyspark.sql import functions as F
+import logging
+
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
+handler = logging.StreamHandler()
+formatter = logging.Formatter(
+    '%(asctime)s - %(levelname)s - %(message)s'
+)
+handler.setFormatter(formatter)
+logger.addHandler(handler)
+
 
 args = getResolvedOptions(sys.argv, [
     "JOB_NAME"
@@ -123,44 +134,62 @@ def drop_duplicates(dyf: F.DataFrame, table_name: str) -> F.DataFrame:
     return df
 
 TABLES = ["api_logs", "errors", "events", "sessions", "user_signups"]
+failed_table = []
+succesfuly_table = []
+
 for tables in TABLES:
-    dyf = glueContext.create_dynamic_frame.from_catalog(
-        database="database-bronze",
-        table_name=tables,
-        transformation_ctx=f"read_bronze"
-    )
-    # convertir dinamicframe a dataFrame
-    df = dyf.toDF()
+    try:  
+        dyf = glueContext.create_dynamic_frame.from_catalog(
+            database="database-bronze",
+            table_name=tables,
+            transformation_ctx=f"read_bronze"
+        )
+        # convertir dinamicframe a dataFrame
+        logger.info(f"Procesando Tabla: {tables}")
+        df = dyf.toDF()
 
-    # Aplanar Datos
-    df = flatten_columns(df)
-    
-    # Cambiar Tipos de Datos
-    df = convert_type_data(df, tables)
-    
-    # pasar numeros negativos a positivos
-    df = num_positivos(df)
-    
-    # Eliminar Duplicados
-    df = drop_duplicates(df, tables)
-    
-    # Rellenar Datos Nulos
-    df = fillna_columns(df)
-    
-    dyf = DynamicFrame.fromDF(df, glueContext, "dyf_end")
-    
-    sink = glueContext.getSink(
-        connection_type="s3",
-        path = f"s3://slv-logs-ecommerce/{tables}/",
-        enableUpdateCatalog=True,
-        compression="snappy",
-        updateBehavior="UPDATE_IN_DATABASE",
-        partitionKeys=["year", "month", "day"],
-        transformation_ctx="write_silver"
+        # Aplanar Datos
+        df = flatten_columns(df)
+        
+        # Cambiar Tipos de Datos
+        df = convert_type_data(df, tables)
+        
+        # pasar numeros negativos a positivos
+        df = num_positivos(df)
+        
+        # Eliminar Duplicados
+        df = drop_duplicates(df, tables)
+        
+        # Rellenar Datos Nulos
+        df = fillna_columns(df)
+        
+        dyf = DynamicFrame.fromDF(df, glueContext, "dyf_end")
+        
+        sink = glueContext.getSink(
+            connection_type="s3",
+            path = f"s3://slv-logs-ecommerce/{tables}/",
+            enableUpdateCatalog=True,
+            compression="snappy",
+            updateBehavior="UPDATE_IN_DATABASE",
+            partitionKeys=["year", "month", "day"],
+            transformation_ctx="write_silver"
 
-    )
-    sink.setFormat("glueparquet")
-    sink.setCatalogInfo(catalogDatabase="database-silver", catalogTableName=tables)
-    sink.writeFrame(dyf)
-    
-    
+        )
+        sink.setFormat("glueparquet")
+        sink.setCatalogInfo(catalogDatabase="database-silver", catalogTableName=tables)
+        sink.writeFrame(dyf)
+        
+        succesfuly_table.append(tables)
+    except Exception as ex:
+        failed_table.append({
+            "table": tables,
+            "error": str(ex)
+        })
+        logger.error(f"Table: {tables} Fallo: {str(ex)}", exc_info=True)
+        continue
+
+logger.info("Procesamiento Finalizado")
+logger.info(f"Tablas Completadas: {succesfuly_table}")
+
+if failed_table:
+    logger.error(f"Tablas con Error: {failed_table}")
