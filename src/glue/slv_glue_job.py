@@ -19,45 +19,36 @@ job = Job(glueContext)
 
 job.init(args["JOB_NAME"], args)
 NEW_SCHEMA_CONFIG = {
-    "api_request_logs": {
-        "request_id": StringType(),
-        "http_status": IntegerType(),
-        "request_bytes": DoubleType(),
-        "response_bytes": DoubleType(),
-        "inserted_at": TimestampType()
+    "api_logs": {
+        "id": "api_log_id",
+        "payload_size_bytes": IntegerType(),
+        "body_size_bytes": IntegerType(),
+        "latency_ms": IntegerType(),
+        "timestamp": TimestampType()
     },
-    "inventory_movement_logs": {
-        "event_id": StringType(),
-        "new_price": DecimalType(),
-        "previous_price": DecimalType(),
-        "new_quantity": IntegerType(),
-        "previous_quantity": IntegerType(),
-        "quantity_change": IntegerType(),
-        "inserted_at": TimestampType()
+    "errors": {
+        "id": "error_id",
+        "timestamp": TimestampType()
     },
-    "order_processing_logs": {
-        "event_id": StringType(),
-        "items_count": IntegerType(),
-        "total": DecimalType(),
-        "processing_time_ms": LongType(),
-        "inserted_at": TimestampType()
-    },
-    "payment_transaction_logs": {
-        "event_id": StringType(),
-        "installments": IntegerType(),
-        "value": DecimalType(),
-        "bin": IntegerType(),
-        "last_four": IntegerType(),
-        "processing_time_ms": LongType(),
-        "retry_count": IntegerType(),
-        "score": IntegerType(),
-        "inserted_at": TimestampType()
+    "events": {
+        "id": "event_id",
+        "duration_ms": IntegerType(),
+        "timestamp": TimestampType()
         
     },
-    "user_session_logs": {
-        "event_id": StringType(),
-        "cart_items_count": IntegerType(),
-        "inserted_at": TimestampType()
+    "sessions": {
+        "id":"session_id",
+        "duration_seconds": IntegerType(),
+        "pages_visited": IntegerType(),
+        "events_count": IntegerType(),
+        "started_at": TimestampType(),
+        "timestamp": TimestampType()
+    },
+    "user_signups": {
+        "id":"signup_id",
+        "created_at": TimestampType(),
+        "abandoned_at_step": TimestampType()
+        
     }
     
 }
@@ -75,9 +66,10 @@ def fillna_columns(dyf: F.DataFrame) -> F.DataFrame:
     return df
 
 def num_positivos(dyf: F.DataFrame)-> F.DataFrame:
+    df = dyf
     for columns in dyf.schema:
         if isinstance(columns.dataType, (IntegerType, FloatType, DecimalType, LongType)):
-            df = dyf.withColumn(
+            df = df.withColumn(
                 columns.name,
                 F.abs(F.col(columns.name))
             )
@@ -130,7 +122,7 @@ def drop_duplicates(dyf: F.DataFrame, table_name: str) -> F.DataFrame:
     
     return df
 
-TABLES = ["api_request_logs", "inventory_movement_logs", "order_processing_logs", "payment_transaction_logs", "user_session_logs"]
+TABLES = ["api_logs", "errors", "events", "sessions", "user_signups"]
 for tables in TABLES:
     dyf = glueContext.create_dynamic_frame.from_catalog(
         database="database-bronze",
@@ -145,6 +137,9 @@ for tables in TABLES:
     
     # Cambiar Tipos de Datos
     df = convert_type_data(df, tables)
+    
+    # pasar numeros negativos a positivos
+    df = num_positivos(df)
     
     # Eliminar Duplicados
     df = drop_duplicates(df, tables)

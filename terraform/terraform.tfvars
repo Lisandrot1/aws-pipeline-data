@@ -109,11 +109,11 @@ crawler_bronze = "crawler-identity-brz"
 crawler_silver = "crawler-identity-slv"
 crawler_gold = "crawler-identity-gld"
 
-path_bronze = ["api_request_logs",
-  "inventory_movement_logs",
-  "order_processing_logs",
-  "payment_transaction_logs",
-  "user_session_logs"]
+path_bronze = ["api_logs",
+  "errors",
+  "events",
+  "sessions",
+  "user_signups"]
 
 tags = {
   Name       = "Crawlers Identity"

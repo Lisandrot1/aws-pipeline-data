@@ -128,7 +128,8 @@ data "aws_iam_policy_document" "job_etl_policy" {
     actions = [
       "logs:CreateLogGroup",
       "logs:CreateLogStream",
-      "logs:PutLogEvents"
+      "logs:PutLogEvents",
+      "cloudwatch:PutMetricData"
     ]
     resources = [ "*" ]
   }

@@ -4,67 +4,106 @@ AWS Data Pipeline infrastructure using Terraform.
 
 ## Infrastructure Structure
 
-```
-pipeline-aws/
-├── terraform/
-│   ├── environments/
-│   │   └── prod/
-│   │       ├── main.tf
-│   │       ├── variables.tf
-│   │       ├── outputs.tf
-│   │       └── backend.tf
-│   ├── modules/
-│   │   ├── s3-bucket/
-│   │   │   ├── main.tf
-│   │   │   ├── variables.tf
-│   │   │   └── outputs.tf
-│   │   ├── glue/
-│   │   │   ├── main.tf
-│   │   │   ├── variables.tf
-│   │   │   └── outputs.tf
-│   │   ├── lambda/
-│   │   │   ├── main.tf
-│   │   │   ├── variables.tf
-│   │   │   └── outputs.tf
-│   │   ├── step-function/
-│   │   │   ├── main.tf
-│   │   │   ├── variables.tf
-│   │   │   └── outputs.tf
-│   │   ├── athena/
-│   │   │   ├── main.tf
-│   │   │   ├── variables.tf
-│   │   │   └── outputs.tf
-│   │   └── eventbridge/
-│   │       ├── main.tf
-│   │       ├── variables.tf
-│   │       └── outputs.tf
-│   ├── data-lake/
-│   │   ├── bronze.tf
-│   │   ├── silver.tf
-│   │   └── gold.tf
-│   ├── pipelines/
-│   │   ├── ingestion.tf
-│   │   ├── transformation.tf
-│   │   └── orchestration.tf
-│   ├── provider.tf
-│   ├── variables.tf
-│   ├── versions.tf
-│   └── outputs.tf
-```
+api_logs
+root
+ |-- api_log_id: string (nullable = true)
+ |-- request_id: string (nullable = true)
+ |-- user_id: string (nullable = true)
+ |-- session_id: string (nullable = true)
+ |-- timestamp: string (nullable = true)
+ |-- endpoint: string (nullable = true)
+ |-- method: string (nullable = true)
+ |-- payload_size_bytes: integer (nullable = true)
+ |-- status_code: integer (nullable = true)
+ |-- latency_ms: integer (nullable = true)
+ |-- body_size_bytes: integer (nullable = true)
+ |-- instance_id: string (nullable = true)
+ |-- region: string (nullable = true)
+ |-- service: string (nullable = true)
+ |-- year: string (nullable = true)
+ |-- month: string (nullable = true)
+ |-- day: string (nullable = true)
 
-## AWS Services
+errors
+root
+ |-- error_id: string (nullable = true)
+ |-- api_log_id: string (nullable = true)
+ |-- timestamp: string (nullable = true)
+ |-- error_type: string (nullable = true)
+ |-- severity: string (nullable = true)
+ |-- is_retryable: boolean (nullable = true)
+ |-- message: string (nullable = true)
+ |-- caused_by: string (nullable = true)
+ |-- environment: string (nullable = true)
+ |-- app_version: string (nullable = true)
+ |-- instance_id: string (nullable = true)
+ |-- year: string (nullable = true)
+ |-- month: string (nullable = true)
+ |-- day: string (nullable = true)
+ |-- _orphan: boolean (nullable = true)
 
-| Module | Services |
-|--------|----------|
-| **s3-bucket** | S3 (Bronze/Silver/Gold buckets) |
-| **glue** | Glue Crawlers, Jobs, Databases |
-| **lambda** | Lambda Functions |
-| **step-function** | Step Functions (State Machines) |
-| **athena** | Athena WorkGroups, Named Queries |
-| **eventbridge** | EventBridge Rules, Targets |
+events
+root
+ |-- event_id: string (nullable = true)
+ |-- session_id: string (nullable = true)
+ |-- user_id: string (nullable = true)
+ |-- event_name: string (nullable = true)
+ |-- event_category: string (nullable = true)
+ |-- timestamp: string (nullable = true)
+ |-- feature_name: string (nullable = true)
+ |-- action: string (nullable = true)
+ |-- duration_ms: integer (nullable = true)
+ |-- status: string (nullable = true)
+ |-- page: string (nullable = true)
+ |-- referrer: string (nullable = true)
+ |-- locale: string (nullable = true)
+ |-- year: string (nullable = true)
+ |-- month: string (nullable = true)
+ |-- day: string (nullable = true)
 
-## Layers
+sessions
+root
+ |-- session_id: string (nullable = true)
+ |-- user_id: string (nullable = true)
+ |-- started_at: string (nullable = true)
+ |-- ended_at: string (nullable = true)
+ |-- duration_seconds: integer (nullable = true)
+ |-- type: string (nullable = true)
+ |-- os: string (nullable = true)
+ |-- app_version: string (nullable = true)
+ |-- pages_visited: integer (nullable = true)
+ |-- events_count: integer (nullable = true)
+ |-- errors_encountered: integer (nullable = true)
+ |-- ip_address: string (nullable = true)
+ |-- country: string (nullable = true)
+ |-- city: string (nullable = true)
+ |-- year: string (nullable = true)
+ |-- month: string (nullable = true)
+ |-- day: string (nullable = true)
 
-- **data-lake/**: Bronze (raw), Silver (cleaned), Gold (aggregated) storage
-- **pipelines/**: ETL pipeline definitions (ingestion, transformation, orchestration)
-- **environments/**: Production environment configuration
+user_signups
+root
+ |-- signup_id: string (nullable = true)
+ |-- user_id: string (nullable = true)
+ |-- email: string (nullable = true)
+ |-- full_name: string (nullable = true)
+ |-- created_at: string (nullable = true)
+ |-- plan_initial: string (nullable = true)
+ |-- completed: boolean (nullable = true)
+ |-- steps_completed: integer (nullable = true)
+ |-- total_steps: integer (nullable = true)
+ |-- abandoned_at_step: string (nullable = true)
+ |-- type: string (nullable = true)
+ |-- browser: string (nullable = true)
+ |-- os: string (nullable = true)
+ |-- email_verified: boolean (nullable = true)
+ |-- email_verified_at: string (nullable = true)
+ |-- country: string (nullable = true)
+ |-- country_name: string (nullable = true)
+ |-- city: string (nullable = true)
+ |-- source: string (nullable = true)
+ |-- referral_code: string (nullable = true)
+ |-- year: string (nullable = true)
+ |-- month: string (nullable = true)
+ |-- day: string (nullable = true)
+​
