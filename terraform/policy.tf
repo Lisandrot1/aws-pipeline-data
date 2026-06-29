@@ -61,6 +61,21 @@ data "aws_iam_policy_document" "lambda_to_s3" {
         "${module.s3_bronze.bucket_arn}/*"
      ]
   }
+  statement {
+    sid = "EscribirCatalogo"
+    effect = "Allow"
+    actions = [ 
+      "glue:GetDatabase",
+      "glue:CreateTable",
+      "glue:GetTable",
+      "glue:UpdateTable",
+      "glue:CreatePartition"
+     ]
+     resources = [ 
+      "${module.db_bronze.catalgoo_db_arn}" ,
+      "${module.db_bronze.catalgoo_db_arn}/*" 
+      ]
+  }
 }
 
 resource "aws_iam_policy" "ReadS3Lambda" {
@@ -83,11 +98,18 @@ data "aws_iam_policy_document" "job_etl_policy" {
     actions = [
       "s3:PutObject",
 			"s3:ListBucket",
-      "s3:GetBucketLocation"
+      "s3:GetBucketLocation",
+      "s3:GetObject"
     ]
     resources = [
       "${module.s3_bronze.bucket_arn}",
-      "${module.s3_bronze.bucket_arn}/*"
+      "${module.s3_bronze.bucket_arn}/*",
+      "${module.s3_silver.bucket_arn}",
+      "${module.s3_silver.bucket_arn}/*",
+      "${module.s3_gold.bucket_arn}",
+      "${module.s3_gold.bucket_arn}/*",
+      "${module.s3_scripts.bucket_arn}",
+      "${module.s3_scripts.bucket_arn}/*"
     ]
   }
 
@@ -106,9 +128,18 @@ data "aws_iam_policy_document" "job_etl_policy" {
     actions = [
       "logs:CreateLogGroup",
       "logs:CreateLogStream",
-      "logs:PutLogEvents"
+      "logs:PutLogEvents",
+      "cloudwatch:PutMetricData"
     ]
     resources = [ "*" ]
+  }
+  statement {
+    sid = "passrole"
+    effect = "Allow"
+    actions = [
+      "iam:PassRole"
+    ]
+    resources = [ "arn:aws:iam::232791540625:role/glue-job-role" ]
   }
 }
 
@@ -117,4 +148,95 @@ resource "aws_iam_policy" "policy_glue_all_permisos" {
   policy = data.aws_iam_policy_document.job_etl_policy.json
 }
 
+#==========================================================================================================
+#=============================== STEP FUNCTIONS ORCHESTRATOR ==============================================
+data "aws_iam_policy_document" "orch_step_etl" {
+  statement {
+    sid = "invokeLambda"
+    effect = "Allow"
+    actions = [
+      "lambda:InvokeFunction"
+    ]
+    resources = [ "${module.data_lambda.lambda_arn}" ]
+  }
+  statement {
+    sid = "invokeGlue"
+    effect = "Allow"
+    actions = [
+      "glue:StartJobRun"
+    ]
+    resources = flatten([
+      module.db_bronze.jobs_etl_arn,
+      module.db_gold.jobs_etl_arn
+    ])
+  }
+}
+
+resource "aws_iam_policy" "policy_step_functions_orch" {
+  name = var.name_policy_step_functions
+  policy = data.aws_iam_policy_document.orch_step_etl.json
+}
+#==========================================================================================================
+#============================= POLICY EVENTBRIGDE =========================================================
+data "aws_iam_policy_document" "policy_eventbrigde" {
+  statement {
+    sid = "eventbrigde"
+    effect = "Allow"
+    actions = [
+      "states:StartExecution"
+    ]
+    resources = [
+      module.step_functions_orch.step_arn
+    ]
+  }
+  statement {
+    sid = "glueLogsCloudwatch"
+    effect = "Allow"
+    actions = [
+      "logs:CreateLogGroup",
+      "logs:CreateLogStream",
+      "logs:PutLogEvents"
+    ]
+    resources = [ "*" ]
+  }
+
+}
+resource "aws_iam_policy" "eventbrigde_policy" {
+  name = var.name_policy_event
+  policy = data.aws_iam_policy_document.policy_eventbrigde.json
+
+}
+#==========================================================================================================
+#=================================== POLICY SNS ========================================================
+
+data "aws_iam_policy_document" "document_sns" {
+  statement {
+    sid = "documentSNSNotification"
+    effect = "Allow"
+    actions = [
+      "sns:Publish"
+    ]
+    resources = [
+      module.sns_notifications.topic_arn
+    ]
+  }
+  statement {
+    sid = "snsCloudWach"
+    effect = "Allow"
+    actions = [
+      "logs:CreateLogGroup",
+      "logs:CreateLogStream",
+      "logs:PutLogEvents",
+      "logs:PutMetricFilter",
+      "logs:PutRetentionPolicy"
+    ]
+    resources = [
+      "*"
+    ]
+  }
+}
+resource "aws_iam_policy" "sns_policy" {
+  name = var.document_policy_name
+  policy = data.aws_iam_policy_document.document_sns.json
+}
 #==========================================================================================================

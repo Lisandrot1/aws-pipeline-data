@@ -109,7 +109,11 @@ crawler_bronze = "crawler-identity-brz"
 crawler_silver = "crawler-identity-slv"
 crawler_gold = "crawler-identity-gld"
 
-path_bronze = [ "inventory_logs", "order_logs", "payment_logs", "system_error_logs", "user_activity_logs" ]
+path_bronze = ["api_logs",
+  "errors",
+  "events",
+  "sessions",
+  "user_signups"]
 
 tags = {
   Name       = "Crawlers Identity"
@@ -130,11 +134,14 @@ lambda_tags = {
 }
 #==============================================================================
 #======================= VARIABLES PARA STEP FUNCTIONS =========================================
-
+step_functions_name = "orch-logs-ecommerce"
+name_role_step_functions = "orch-logs-ecommerce-step"
+name_policy_step_functions = "policy_step_functions_orch"
 #============================== FIN VARIABLES PARA STEP FUNCTIONS =============================
 #======================= VARIABLES PARA AWS GLUE JOB =========================================
 name_rol_glue = "glue-job-role"
 job_name_glue = "job-ecommerce-logs"
+gld_job_ecommerce = "gld-ecommerce-job"
 
 job_tags_glue = {
   Name       = "Glue Job Procesar"
@@ -143,6 +150,37 @@ job_tags_glue = {
   Capa       = "Glue"
   Action     = "Procesar"
 }
+gld_tags_glue = {
+  Name       = "Glue Job GOLD"
+  Owner      = "TORRES IAM"
+  Enviroment = "prod"
+  Capa       = "Glue"
+  Action     = "Procesar"
+}
 name_policy_glue_job = "policy-job-all-permisos"
 bucket_glue = "logs-glue-scripts"
+
+
 #============================== FIN VARIABLES PARA AWS GLUE JOB =============================
+#============================== INICIO VARIABLES PARA EVENTBRIGDE =============================
+event_drigde_name = "orch-cron-etl-ecommerce"
+
+name_policy_event = "policy-eventbrigde"
+
+name_role_event = "role-eventbrige-cron"
+#============================== FIN VARIABLES PARA EVENTBRIGDE =============================
+#================================ VARIABLES SNS =======================================================
+name_sns_pipeline = "alert-notification-pipeline"
+
+name_endpoint = "lmlisandro3@gmail.com"
+
+sns_tags = {
+  Name       = "SNS Notification"
+  Owner      = "TORRES IAM"
+  Enviroment = "prod"
+  Capa       = "SNS"
+  Action     = "Notification"
+}
+document_policy_name = "policy-document-sns"
+name_role_sns = "sns-role-notifications"
+#==========================================================================================================

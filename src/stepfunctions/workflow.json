@@ -1,0 +1,30 @@
+{
+  "Comment": "Estructura inicial temporal de la Step Function",
+  "StartAt": "Identity Data s3",
+  "States": {
+    "Identity Data s3": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::lambda:invoke",
+      "OutputPath": "$.Payload",
+      "Parameters": {
+        "FunctionName": "arn:aws:lambda:us-east-1:232791540625:function:check-new-data-s3:$LATEST"
+      },
+      "Retry": [
+        {
+          "ErrorEquals": [
+            "Lambda.ServiceException",
+            "Lambda.AWSLambdaException",
+            "Lambda.SdkClientException",
+            "Lambda.TooManyRequestsException"
+          ],
+          "IntervalSeconds": 1,
+          "MaxAttempts": 3,
+          "BackoffRate": 2,
+          "JitterStrategy": "FULL"
+        }
+      ],
+      "End": true,
+      "Comment": "lambda para saber si hay datos del dia anterior"
+    }
+  }
+}

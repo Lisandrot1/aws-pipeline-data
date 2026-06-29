@@ -189,6 +189,18 @@ variable "lambda_tags" {
 
 #======================= VARIABLES PARA STEP FUNCTIONS =========================================
 
+variable "step_functions_name" {
+  type = string
+  description = "nombre de step funcions para la orquestacion"
+}
+variable "name_role_step_functions" {
+  type = string
+  description = "nombre del rol del recurso step functions"
+}
+variable "name_policy_step_functions" {
+  type = string
+  description = "policy de step functions"
+}
 #============================== FIN VARIABLES PARA STEP FUNCTIONS =============================
 
 
@@ -209,8 +221,56 @@ variable "job_tags_glue" {
   default = {}
   description = "tags para el job"
 }
+variable "gld_job_ecommerce" {
+  type = string
+  description = "nombre job para gold"
+}
+variable "gld_tags_glue" {
+  default = {}
+  description = "tags para el job de gold"
+}
 variable "bucket_glue" {
   type = string
   description = "bucket para insertar los scripts de glue"
+}
+#==========================================================================================================
+
+#============================ EVENTBRIGDE VARIABLES =======================================================
+
+variable "event_drigde_name" {
+  type = string
+  description = "nombre del cron para el step"
+}
+variable "name_policy_event" {
+  type = string
+  description = "nombre del policy para eventbrigde"
+}
+
+variable "name_role_event" {
+  type = string
+  description = "nombre del rol para eventbrigde"
+}
+#==========================================================================================================
+#================================ VARIABLES SNS =======================================================
+variable "name_sns_pipeline" {
+  type = string
+  description = "nombre notificacion sns pipeline"
+}
+
+variable "name_endpoint" {
+  type = string
+  description = "email del destino de la notificacion"
+}
+
+variable "sns_tags" {
+  default = {}
+}
+variable "document_policy_name" {
+  type = string
+  description = "nombre del policty de sns"
+}
+variable "name_role_sns" {
+  type = string
+  description = "nombre del role de sns"
 }
 #==========================================================================================================
