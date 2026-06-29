@@ -207,3 +207,36 @@ resource "aws_iam_policy" "eventbrigde_policy" {
 
 }
 #==========================================================================================================
+#=================================== POLICY SNS ========================================================
+
+data "aws_iam_policy_document" "document_sns" {
+  statement {
+    sid = "documentSNSNotification"
+    effect = "Allow"
+    actions = [
+      "sns:Publish"
+    ]
+    resources = [
+      module.sns_notifications.topic_arn
+    ]
+  }
+  statement {
+    sid = "snsCloudWach"
+    effect = "Allow"
+    actions = [
+      "logs:CreateLogGroup",
+      "logs:CreateLogStream",
+      "logs:PutLogEvents",
+      "logs:PutMetricFilter",
+      "logs:PutRetentionPolicy"
+    ]
+    resources = [
+      "*"
+    ]
+  }
+}
+resource "aws_iam_policy" "sns_policy" {
+  name = var.document_policy_name
+  policy = data.aws_iam_policy_document.document_sns.json
+}
+#==========================================================================================================

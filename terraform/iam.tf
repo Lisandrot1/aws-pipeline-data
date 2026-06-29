@@ -115,3 +115,21 @@ resource "aws_iam_role_policy_attachment" "eventbrigde_role_policy" {
   policy_arn = aws_iam_policy.eventbrigde_policy.arn
 }
 #==========================================================================================================
+#======================================== SNS ROLE ========================================================
+resource "aws_iam_role" "sns_role" {
+  name = var.name_role_sns
+  assume_role_policy = jsonencode({
+    Statement   = [{
+      Action    = "sts:AssumeRole"
+      Effect    = "Allow"
+      Principal = {
+        Service : "sns.amazonaws.com"
+      }
+    }]
+  })
+}
+resource "aws_iam_role_policy_attachment" "sns_role_policy" {
+  policy_arn = aws_iam_policy.sns_policy.arn
+  role = aws_iam_role.sns_role.name
+}
+#==========================================================================================================

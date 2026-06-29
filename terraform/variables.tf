@@ -251,3 +251,26 @@ variable "name_role_event" {
   description = "nombre del rol para eventbrigde"
 }
 #==========================================================================================================
+#================================ VARIABLES SNS =======================================================
+variable "name_sns_pipeline" {
+  type = string
+  description = "nombre notificacion sns pipeline"
+}
+
+variable "name_endpoint" {
+  type = string
+  description = "email del destino de la notificacion"
+}
+
+variable "sns_tags" {
+  default = {}
+}
+variable "document_policy_name" {
+  type = string
+  description = "nombre del policty de sns"
+}
+variable "name_role_sns" {
+  type = string
+  description = "nombre del role de sns"
+}
+#==========================================================================================================

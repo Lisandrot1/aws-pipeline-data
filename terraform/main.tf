@@ -122,3 +122,12 @@ module "event_brigde_orch" {
   role_arn_step    = aws_iam_role.eventbrigde_role.arn
 }
 #============================== FIN MODULO PARA EVENTBRIGDE =============================
+
+#========================== INICIO MODULO SNS =========================================
+module "sns_notifications" {
+  source = "./modules/sns"
+  name_sns_topic = var.name_sns_pipeline
+
+  endpoint_email = var.name_endpoint
+}
+#========================== FIN MODULO SNS ============================================

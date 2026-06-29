@@ -169,3 +169,18 @@ name_policy_event = "policy-eventbrigde"
 
 name_role_event = "role-eventbrige-cron"
 #============================== FIN VARIABLES PARA EVENTBRIGDE =============================
+#================================ VARIABLES SNS =======================================================
+name_sns_pipeline = "alert-notification-pipeline"
+
+name_endpoint = "lmlisandro3@gmail.com"
+
+sns_tags = {
+  Name       = "SNS Notification"
+  Owner      = "TORRES IAM"
+  Enviroment = "prod"
+  Capa       = "SNS"
+  Action     = "Notification"
+}
+document_policy_name = "policy-document-sns"
+name_role_sns = "sns-role-notifications"
+#==========================================================================================================
