@@ -1,12 +1,25 @@
 {
   "Comment": "Estructura inicial temporal de la Step Function",
-  "StartAt": "Identity Data s3",
+  "StartAt": "Iniciando Pipeline",
   "States": {
-    "Identity Data s3": {
+    "Iniciando Pipeline": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::sns:publish",
+      "Parameters": {
+        "TopicArn": "arn:aws:sns:us-east-1:232791540625:alert-notification-pipeline",
+        "Message": {
+          "Message.$": "States.Format('🚀 Pipeline Iniciado\n\n🔹 State Machine: {}\n🔹 ID Ejecucion: {}\n🔹 Hora de Inicio: {}\n\n📍 Estado: Iniciando ejecucion...\n\n📝 Descripcion: Iniciando orquestacion para procesar logs de ecommerce.', $$.StateMachine.Name, $$.Execution.Name, $$.Execution.StartTime)"
+        }
+      },
+      "Comment": "sns para enviar notificaciones al email cuando se ejecute el pipeline todas las noches",
+      "Next": "Identificar Datos S3"
+    },
+    "Identificar Datos S3": {
       "Type": "Task",
       "Resource": "arn:aws:states:::lambda:invoke",
       "OutputPath": "$.Payload",
       "Parameters": {
+        "Payload.$": "$",
         "FunctionName": "arn:aws:lambda:us-east-1:232791540625:function:check-new-data-s3:$LATEST"
       },
       "Retry": [
@@ -23,8 +36,41 @@
           "JitterStrategy": "FULL"
         }
       ],
-      "End": true,
-      "Comment": "lambda para saber si hay datos del dia anterior"
+      "Comment": "Lambda para identificar datos de bronze para transformar",
+      "Next": "Decision Steps"
+    },
+    "Decision Steps": {
+      "Type": "Choice",
+      "Choices": [
+        {
+          "Next": "Exito",
+          "Variable": "$.continuar",
+          "BooleanEquals": true
+        }
+      ],
+      "Default": "SNS Publish"
+    },
+    "Exito": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::sns:publish",
+      "Parameters": {
+        "TopicArn": "arn:aws:sns:us-east-1:232791540625:alert-notification-pipeline",
+        "Message": {
+          "Message": "Si hay datos"
+        }
+      },
+      "End": true
+    },
+    "SNS Publish": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::sns:publish",
+      "Parameters": {
+        "TopicArn": "arn:aws:sns:us-east-1:232791540625:alert-notification-pipeline",
+        "Message": {
+          "message": "No hay Datos"
+        }
+      },
+      "End": true
     }
   }
 }

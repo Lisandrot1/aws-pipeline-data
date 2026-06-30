@@ -17,11 +17,11 @@ def lambda_handler(event, context):
         hay_datos = False
         bucket_name = "brz-logs-ecommerce"
         tables = [
-            "api_request_logs",
-            "inventory_movement_logs",
-            "order_processing_logs",
-            "payment_transaction_logs",
-            "user_session_logs"
+            "api_logs",
+            "errors",
+            "events",
+            "sessions",
+            "user_signups"
         ]
         
         for tab in tables:
@@ -35,7 +35,9 @@ def lambda_handler(event, context):
             else:
                 print(f"no hay datos en: {tab} y dia: {fecha.day}")
         
-        return hay_datos  
+        return {
+            "continuar" : hay_datos
+        }  
    except Exception as ex:
       print(f"ERROR EN LA LAMBDA DE IDENNTIFICACION: {ex}")
       

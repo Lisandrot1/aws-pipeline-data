@@ -152,12 +152,22 @@ resource "aws_iam_policy" "policy_glue_all_permisos" {
 #=============================== STEP FUNCTIONS ORCHESTRATOR ==============================================
 data "aws_iam_policy_document" "orch_step_etl" {
   statement {
+    sid = "InvokeSNS"
+    effect = "Allow"
+    actions = [
+      "sns:Publish"
+    ]
+    resources = [ module.sns_notifications.topic_arn ]
+  }
+  statement {
     sid = "invokeLambda"
     effect = "Allow"
     actions = [
       "lambda:InvokeFunction"
     ]
-    resources = [ "${module.data_lambda.lambda_arn}" ]
+    resources = [ 
+      "${module.data_lambda.lambda_arn}",
+      "${module.data_lambda.lambda_arn}:*" ]
   }
   statement {
     sid = "invokeGlue"
