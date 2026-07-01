@@ -4,10 +4,11 @@ from awsglue.utils import getResolvedOptions
 from awsglue.context import GlueContext
 from pyspark import SparkContext
 from awsglue.job import Job
-from pyspark.sql.types import StringType, IntegerType, DoubleType, FloatType, TimestampType, DecimalType, StructType, LongType
+from pyspark.sql.types import StringType, IntegerType, DoubleType, FloatType, TimestampType, DateType,DecimalType, StructType, LongType
 from awsglue.dynamicframe import DynamicFrame
 from pyspark.sql import functions as F
 import logging
+from datetime import datetime, timedelta
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
@@ -67,11 +68,15 @@ NEW_SCHEMA_CONFIG = {
 
 def fillna_columns(dyf: F.DataFrame) -> F.DataFrame:
     fill_int = [column.name for column in dyf.schema if isinstance(column.dataType, (IntegerType, DoubleType, DecimalType, LongType))]
-    
+    fill_date = [column.name for column in dyf.schema if isinstance(column.dataType, (DateType, TimestampType))]
     fill_str = [column.name for column in dyf.schema if isinstance(column.dataType, (StringType))]
+    
+    date_ayer = datetime.combine(datetime.today() - timedelta(days=1), datetime.min.time())
+    
     
     fill_values = {col: 0 for col in fill_int}
     fill_values.update({col: "unknown" for col in fill_str})
+    fill_values.update({col: date_ayer for col in fill_date})
     
     df = dyf.fillna(fill_values)
     
