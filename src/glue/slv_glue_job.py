@@ -52,6 +52,7 @@ NEW_SCHEMA_CONFIG = {
         "duration_seconds": IntegerType(),
         "pages_visited": IntegerType(),
         "events_count": IntegerType(),
+        "errors_encountered":IntegerType(),
         "started_at": TimestampType(),
         "timestamp": TimestampType()
     },
