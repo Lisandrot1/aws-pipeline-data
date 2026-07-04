@@ -110,7 +110,7 @@ crawler_silver = "crawler-identity-slv"
 crawler_gold = "crawler-identity-gld"
 
 path_bronze = ["api_logs",
-  "errors",
+  "transactions",
   "events",
   "sessions",
   "user_signups"]

@@ -38,9 +38,14 @@ NEW_SCHEMA_CONFIG = {
         "latency_ms": IntegerType(),
         "timestamp": TimestampType()
     },
-    "errors": {
-        "id": "error_id",
-        "timestamp": TimestampType()
+    "transactions": {
+        "id": "transaction_id",
+        "timestamp": TimestampType(),
+        "subtotal": DecimalType(),
+        "discount":DecimalType(),
+        "tax_rate":DecimalType(),
+        "tax_amount": DecimalType(),
+        "total": DecimalType()
     },
     "events": {
         "id": "event_id",
@@ -71,12 +76,12 @@ def fillna_columns(dyf: F.DataFrame) -> F.DataFrame:
     fill_date = [column.name for column in dyf.schema if isinstance(column.dataType, (DateType, TimestampType))]
     fill_str = [column.name for column in dyf.schema if isinstance(column.dataType, (StringType))]
     
-    date_ayer = datetime.combine(datetime.today() - timedelta(days=1), datetime.min.time())
+    ayer_string = (datetime.combine(datetime.today() - timedelta(days=1), datetime.min.time())).strftime("%Y-%m-%d %H:%M:%S")    
     
     
     fill_values = {col: 0 for col in fill_int}
     fill_values.update({col: "unknown" for col in fill_str})
-    fill_values.update({col: date_ayer for col in fill_date})
+    fill_values.update({col: ayer_string for col in fill_date})
     
     df = dyf.fillna(fill_values)
     
@@ -139,7 +144,7 @@ def drop_duplicates(dyf: F.DataFrame, table_name: str) -> F.DataFrame:
     
     return df
 
-TABLES = ["api_logs", "errors", "events", "sessions", "user_signups"]
+TABLES = ["api_logs", "transactions", "events", "sessions", "user_signups"]
 failed_table = []
 succesfuly_table = []
 
