@@ -18,14 +18,14 @@ def lambda_handler(event, context):
         bucket_name = "brz-logs-ecommerce"
         tables = [
             "api_logs",
-            "errors",
+            "transactions",
             "events",
             "sessions",
             "user_signups"
         ]
         
         for tab in tables:
-            path_prefix = f"{tab}/year={fecha.year}/month={fecha.month:02d}/day={fecha.day}/"
+            path_prefix = f"{tab}/year={fecha.year}/month={fecha.month:02d}/day={fecha.day:02d}/"
             res = s3.list_objects_v2(Bucket=bucket_name, Prefix=path_prefix)
             
             

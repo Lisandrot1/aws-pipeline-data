@@ -43,20 +43,28 @@
       "Type": "Choice",
       "Choices": [
         {
-          "Next": "Exito",
           "Variable": "$.continuar",
-          "BooleanEquals": true
+          "BooleanEquals": true,
+          "Next": "StartCrawler"
         }
       ],
       "Default": "SNS Publish"
     },
-    "Exito": {
+    "StartCrawler": {
+      "Type": "Task",
+      "Parameters": {
+        "Name": "crawler-identity-brz"
+      },
+      "Resource": "arn:aws:states:::aws-sdk:glue:startCrawler",
+      "Next": "messahe"
+    },
+    "messahe": {
       "Type": "Task",
       "Resource": "arn:aws:states:::sns:publish",
       "Parameters": {
         "TopicArn": "arn:aws:sns:us-east-1:232791540625:alert-notification-pipeline",
         "Message": {
-          "Message": "Si hay datos"
+          "Message": "si funciono"
         }
       },
       "End": true

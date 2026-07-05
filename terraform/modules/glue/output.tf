@@ -9,3 +9,8 @@ output "catalgoo_db_id" {
 output "jobs_etl_arn" {
   value = aws_glue_job.job_etl[*].arn
 }
+
+
+output "crawler_arn" {
+  value = aws_glue_crawler.identity_crawlers[*].arn
+}

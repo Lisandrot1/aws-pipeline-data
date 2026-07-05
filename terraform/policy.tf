@@ -173,11 +173,14 @@ data "aws_iam_policy_document" "orch_step_etl" {
     sid = "invokeGlue"
     effect = "Allow"
     actions = [
-      "glue:StartJobRun"
+      "glue:StartJobRun",
+      "glue:GetCrawler",
+      "glue:StartCrawler"
     ]
     resources = flatten([
-      module.db_bronze.jobs_etl_arn,
-      module.db_gold.jobs_etl_arn
+      "${module.db_bronze.jobs_etl_arn}",
+      "${module.db_gold.jobs_etl_arn}",
+      "${module.db_bronze.crawler_arn}"
     ])
   }
 }
