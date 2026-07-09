@@ -69,7 +69,8 @@
         "Name": "crawler-identity-brz"
       },
       "Resource": "arn:aws:states:::aws-sdk:glue:getCrawler",
-      "Next": "Choice"
+      "Next": "Choice",
+      "ResultPath": "$.CrawlerStatus"
     },
     "Choice": {
       "Type": "Choice",
@@ -88,8 +89,20 @@
       "Parameters": {
         "JobName": "job-ecommerce-logs"
       },
-      "End": true,
-      "Comment": "Job para transformar datos e insertar de bronze a silver"
+      "Comment": "Job para transformar datos e insertar de bronze a silver",
+      "ResultPath": "$.SilverJobStatus",
+      "Next": "Succed"
+    },
+    "Succed": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::sns:publish",
+      "Parameters": {
+        "TopicArn": "arn:aws:sns:us-east-1:232791540625:alert-notification-pipeline",
+        "Message": {
+          "Message": "Funciono Orquestador hasta AWS GLUE JOB"
+        }
+      },
+      "End": true
     },
     "SNS Publish": {
       "Type": "Task",

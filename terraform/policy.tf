@@ -173,6 +173,7 @@ data "aws_iam_policy_document" "orch_step_etl" {
     sid = "invokeGlue"
     effect = "Allow"
     actions = [
+      "glue:GetJobRun",
       "glue:StartJobRun",
       "glue:GetCrawler",
       "glue:StartCrawler"
@@ -182,6 +183,19 @@ data "aws_iam_policy_document" "orch_step_etl" {
       "${module.db_gold.jobs_etl_arn}",
       "${module.db_bronze.crawler_arn}"
     ])
+  }
+
+  statement {
+    sid = "eventsRules"
+    effect = "Allow"
+    actions = [ 
+      "events:PutRule",
+      "events:PutTargets",
+      "events:DescribeRule"
+    ]
+    resources = [
+      "arn:aws:events:us-east-1:232791540625:rule/StepFunctionsGetEventForGlueJobRunRule"
+    ]
   }
 }
 
