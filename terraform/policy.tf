@@ -174,6 +174,7 @@ data "aws_iam_policy_document" "orch_step_etl" {
     effect = "Allow"
     actions = [
       "glue:GetJobRun",
+      "glue:GetJobRuns",
       "glue:StartJobRun",
       "glue:GetCrawler",
       "glue:StartCrawler"

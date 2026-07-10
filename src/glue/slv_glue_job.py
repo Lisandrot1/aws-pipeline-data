@@ -153,7 +153,7 @@ for tables in TABLES:
         dyf = glueContext.create_dynamic_frame.from_catalog(
             database="database-bronze",
             table_name=tables,
-            transformation_ctx=f"read_bronze"
+            transformation_ctx=f"read_bronze_{tables}"
         )
         # convertir dinamicframe a dataFrame
         logger.info(f"Procesando Tabla: {tables}")
@@ -183,7 +183,7 @@ for tables in TABLES:
             compression="snappy",
             updateBehavior="UPDATE_IN_DATABASE",
             partitionKeys=["year", "month", "day"],
-            transformation_ctx="write_silver"
+            transformation_ctx=f"write_silver_{tables}"
 
         )
         sink.setFormat("glueparquet")
