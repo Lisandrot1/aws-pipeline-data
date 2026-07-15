@@ -184,7 +184,6 @@ for tables in TABLES:
             updateBehavior="UPDATE_IN_DATABASE",
             partitionKeys=["year", "month", "day"],
             transformation_ctx=f"write_silver_{tables}"
-
         )
         sink.setFormat("glueparquet")
         sink.setCatalogInfo(catalogDatabase="database-silver", catalogTableName=tables)
@@ -204,3 +203,5 @@ logger.info(f"Tablas Completadas: {succesfuly_table}")
 
 if failed_table:
     logger.error(f"Tablas con Error: {failed_table}")
+
+job.commit()
