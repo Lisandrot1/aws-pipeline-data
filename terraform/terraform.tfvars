@@ -22,7 +22,7 @@ tags_bronze = {
 
 lifecycle_bronze = {
   enable_lifecycle_rule                     = true
-  transition_days_standard_ia               = 30
+  transition_days_standard_ia               = 2
   transition_days_glacier                   = 60
   noncurrent_version_transition_days        = 1
   noncurrent_version_expiration_days        = 2
@@ -46,7 +46,7 @@ tags_silver = {
 
 lifecycle_silver = {
   enable_lifecycle_rule                    = true
-  transition_days_standard_ia              = 30
+  transition_days_standard_ia              = 2
   transition_days_glacier                  = 60
   noncurrent_version_transition_days       = 1
   noncurrent_version_expiration_days       = 2
@@ -70,7 +70,7 @@ tags_gold = {
 
 lifecycle_gold = {
   enable_lifecycle_rule                    = true
-  transition_days_standard_ia              = 30
+  transition_days_standard_ia              = 2
   transition_days_glacier                  = 60
   noncurrent_version_transition_days       = 1
   noncurrent_version_expiration_days       = 2
