@@ -29,12 +29,12 @@ job         = Job(glueContext)
 job.init(args["JOB_NAME"], args)
 
 
-TABLES = ["events", "api_logs", "transactions", "sessions", "user_singups"]
-tablas = {}
+TABLES  = ["events", "api_logs", "transactions", "sessions", "user_singups"]
+tablas  = {}
 for tables in TABLES:
     dyf = glueContext.create_dynamic_frame.from_catalog(
-        database   ="database-silver",
-        table_name =tables
+        database   = "database-silver",
+        table_name = tables
     )
     df = dyf.toDf()
     tablas[tables] = df
@@ -53,7 +53,7 @@ for tabla_gold, function in TABLAS_GOLD.items():
     try:
         df_gold = function()
         #convertimos a dynamicFrame
-        dyf = DynamicFrame.fromDF(df_gold, glueContext, "dyf_gold")
+        dyf  = DynamicFrame.fromDF(df_gold, glueContext, "dyf_gold")
         sink = glueContext.getSink(
             connection_type     = "s3",
             path                = f"s3://gld-logs-ecommerce/{tabla_gold}/",

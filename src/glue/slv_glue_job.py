@@ -5,6 +5,7 @@ from awsglue.context import GlueContext
 from pyspark import SparkContext
 from awsglue.job import Job
 from pyspark.sql.types import StringType, IntegerType, DoubleType, FloatType, TimestampType, DateType,DecimalType, StructType, LongType
+from pyspark.sql.window import Window
 from awsglue.dynamicframe import DynamicFrame
 from pyspark.sql import functions as F
 import logging
@@ -31,59 +32,46 @@ job = Job(glueContext)
 
 job.init(args["JOB_NAME"], args)
 NEW_SCHEMA_CONFIG = {
-    "api_logs": {
-        "id": "api_log_id",
-        "payload_size_bytes": IntegerType(),
-        "body_size_bytes": IntegerType(),
-        "latency_ms": IntegerType(),
-        "timestamp": TimestampType()
-    },
-    "transactions": {
-        "id": "transaction_id",
-        "timestamp": TimestampType(),
-        "subtotal": DecimalType(),
-        "discount":DecimalType(),
-        "tax_rate":DecimalType(),
-        "tax_amount": DecimalType(),
-        "total": DecimalType()
-    },
     "events": {
         "id": "event_id",
-        "duration_ms": IntegerType(),
-        "timestamp": TimestampType()
-        
+        "duration_seconds": IntegerType(),
+        "status_code": IntegerType(),
+        "response_time_ms": IntegerType(),
+        "created_at": TimestampType(),
+        "updated_at": TimestampType(),
+        "dedup"  : "updated_at"
     },
     "sessions": {
         "id":"session_id",
         "duration_seconds": IntegerType(),
-        "pages_visited": IntegerType(),
-        "events_count": IntegerType(),
-        "errors_encountered":IntegerType(),
+        "pages_viewed": IntegerType(),
         "started_at": TimestampType(),
-        "timestamp": TimestampType()
+        "updated_at": TimestampType(),
+        "dedup": "updated_at"
     },
     "user_signups": {
-        "id":"signup_id",
+        "id":"user_id",
         "created_at": TimestampType(),
-        "abandoned_at_step": TimestampType()
-        
+        "updated_at": TimestampType(),
+        "dedup": "updated_at"
     }
     
 }
 
 def fillna_columns(dyf: F.DataFrame) -> F.DataFrame:
-    fill_int = [column.name for column in dyf.schema if isinstance(column.dataType, (IntegerType, DoubleType, DecimalType, LongType))]
-    fill_date = [column.name for column in dyf.schema if isinstance(column.dataType, (DateType, TimestampType))]
-    fill_str = [column.name for column in dyf.schema if isinstance(column.dataType, (StringType))]
+    fill_int  =  [column.name for column in dyf.schema if isinstance(column.dataType, (IntegerType, DoubleType, DecimalType, LongType))]
+    fill_date =  [column.name for column in dyf.schema if isinstance(column.dataType, (DateType, TimestampType))]
+    fill_str  =  [column.name for column in dyf.schema if isinstance(column.dataType, (StringType))]
     
     ayer_string = (datetime.combine(datetime.today() - timedelta(days=1), datetime.min.time())).strftime("%Y-%m-%d %H:%M:%S")    
     
     
     fill_values = {col: 0 for col in fill_int}
-    fill_values.update({col: "unknown" for col in fill_str})
+    fill_values.update({("unknown" if col == "/" else col): "unknown" for col in fill_str})
     fill_values.update({col: ayer_string for col in fill_date})
     
-    df = dyf.fillna(fill_values)
+    df = dyf.fillna(fill_values)    
+    df = df.replace("/", "unknown", subset=fill_str)
     
     return df
 
@@ -139,12 +127,20 @@ def drop_duplicates(dyf: F.DataFrame, table_name: str) -> F.DataFrame:
     table_config = NEW_SCHEMA_CONFIG[table_name]
     if "id" in table_config:
         pk_column = table_config["id"]
-        if pk_column in dyf.columns:
-            df = df.filter(F.col(pk_column).isNotNull()).dropDuplicates(subset=[pk_column])
+        dedup = table_config["dedup"]
+        if pk_column in dyf.columns and dedup in dyf.columns:
+            #agrupamos todos los duplicados aparate y los ordenamos de mayor a menor
+            window_dedup = Window.partitionBy(pk_column).orderBy(F.col(dedup).desc())
+            # creamos una columna auxiliar para rankear los duplicados
+            window_ranked = df.withColumn("rn", F.row_number().over(window_dedup))
+            # filtramos los duplicados por el 1 ya que es el ultimo
+            df_window = window_ranked.filter(F.col("rn") == 1)
+            # eliminamos esa columna axuliar y quedamos con el ultimo registro
+            df = df_window.drop("rn")
     
     return df
 
-TABLES = ["api_logs", "transactions", "events", "sessions", "user_signups"]
+TABLES = ["events", "sessions", "user_signups"]
 failed_table = []
 succesfuly_table = []
 

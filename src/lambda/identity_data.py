@@ -17,8 +17,6 @@ def lambda_handler(event, context):
         hay_datos = False
         bucket_name = "brz-logs-ecommerce"
         tables = [
-            "api_logs",
-            "transactions",
             "events",
             "sessions",
             "user_signups"
