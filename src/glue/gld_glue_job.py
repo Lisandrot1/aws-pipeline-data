@@ -29,7 +29,7 @@ job         = Job(glueContext)
 job.init(args["JOB_NAME"], args)
 
 
-TABLES  = ["events", "api_logs", "transactions", "sessions", "user_singups"]
+TABLES  = ["events", "sessions", "user_singups"]
 tablas  = {}
 for tables in TABLES:
     dyf = glueContext.create_dynamic_frame.from_catalog(

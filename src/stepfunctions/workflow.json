@@ -6,13 +6,13 @@
       "Type": "Task",
       "Resource": "arn:aws:states:::sns:publish",
       "Parameters": {
-        "TopicArn": "arn:aws:sns:us-east-1:232791540625:alert-notification-pipeline",
+        "TopicArn": "arn:aws:sns:us-east-1:409513749305:alert-notification-pipeline",
         "Message": {
           "Message.$": "States.Format('🚀 Pipeline Iniciado\n\n🔹 State Machine: {}\n🔹 ID Ejecucion: {}\n🔹 Hora de Inicio: {}\n\n📍 Estado: Iniciando ejecucion...\n\n📝 Descripcion: Iniciando orquestacion para procesar logs de ecommerce.', $$.StateMachine.Name, $$.Execution.Name, $$.Execution.StartTime)"
         }
       },
-      "Comment": "sns para enviar notificaciones al email cuando se ejecute el pipeline todas las noches",
-      "Next": "Identificar Datos S3"
+      "Next": "Identificar Datos S3",
+      "Comment": "Notificacion para enviar al correo cuando se ejecute el pipeline."
     },
     "Identificar Datos S3": {
       "Type": "Task",
@@ -20,7 +20,7 @@
       "OutputPath": "$.Payload",
       "Parameters": {
         "Payload.$": "$",
-        "FunctionName": "arn:aws:lambda:us-east-1:232791540625:function:check-new-data-s3:$LATEST"
+        "FunctionName": "arn:aws:lambda:us-east-1:409513749305:function:check-new-data-s3:$LATEST"
       },
       "Retry": [
         {
@@ -97,7 +97,7 @@
       "Type": "Task",
       "Resource": "arn:aws:states:::sns:publish",
       "Parameters": {
-        "TopicArn": "arn:aws:sns:us-east-1:232791540625:alert-notification-pipeline",
+        "TopicArn": "arn:aws:sns:us-east-1:409513749305:alert-notification-pipeline",
         "Message": {
           "Message": "Funciono Orquestador hasta AWS GLUE JOB"
         }
@@ -108,7 +108,7 @@
       "Type": "Task",
       "Resource": "arn:aws:states:::sns:publish",
       "Parameters": {
-        "TopicArn": "arn:aws:sns:us-east-1:232791540625:alert-notification-pipeline",
+        "TopicArn": "arn:aws:sns:us-east-1:409513749305:alert-notification-pipeline",
         "Message": {
           "message": "No hay Datos"
         }

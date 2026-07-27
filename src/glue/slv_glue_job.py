@@ -35,7 +35,6 @@ NEW_SCHEMA_CONFIG = {
     "events": {
         "id": "event_id",
         "duration_seconds": IntegerType(),
-        "status_code": IntegerType(),
         "response_time_ms": IntegerType(),
         "created_at": TimestampType(),
         "updated_at": TimestampType(),
@@ -85,6 +84,13 @@ def num_positivos(dyf: F.DataFrame)-> F.DataFrame:
             )
 
     return df
+
+def mayus_min(dyf: F.DataFrame) -> F.DataFrame:
+    for columns in dyf.schema:
+        if isinstance(columns.dataType, (StringType)):
+            df = dyf.withColumn(columns.name, F.initcap(columns.name))
+
+    return df 
 
 def flatten_columns(dyf: F.DataFrame)-> F.DataFrame:
     columns_flatten = []
@@ -140,6 +146,8 @@ def drop_duplicates(dyf: F.DataFrame, table_name: str) -> F.DataFrame:
     
     return df
 
+
+
 TABLES = ["events", "sessions", "user_signups"]
 failed_table = []
 succesfuly_table = []
@@ -158,17 +166,20 @@ for tables in TABLES:
         # Aplanar Datos
         df = flatten_columns(df)
         
+        # Rellenar Datos Nulos (antes de cast para evitar tipos mixtos)
+        df = fillna_columns(df)
+        
         # Cambiar Tipos de Datos
         df = convert_type_data(df, tables)
         
         # pasar numeros negativos a positivos
         df = num_positivos(df)
         
+        # Capitalizar los tipos de datos string
+        df = mayus_min(df)
+        
         # Eliminar Duplicados
         df = drop_duplicates(df, tables)
-        
-        # Rellenar Datos Nulos
-        df = fillna_columns(df)
         
         dyf = DynamicFrame.fromDF(df, glueContext, "dyf_end")
         
