@@ -54,13 +54,12 @@ NEW_SCHEMA_CONFIG = {
         "updated_at": TimestampType(),
         "dedup": "updated_at"
     }
-    
 }
 
 def fillna_columns(dyf: F.DataFrame) -> F.DataFrame:
-    fill_int  =  [column.name for column in dyf.schema if isinstance(column.dataType, (IntegerType, DoubleType, DecimalType, LongType))]
-    fill_date =  [column.name for column in dyf.schema if isinstance(column.dataType, (DateType, TimestampType))]
-    fill_str  =  [column.name for column in dyf.schema if isinstance(column.dataType, (StringType))]
+    fill_int    =  [column.name for column in dyf.schema if isinstance(column.dataType, (IntegerType, DoubleType, DecimalType, LongType))]
+    fill_date   =  [column.name for column in dyf.schema if isinstance(column.dataType, (DateType, TimestampType))]
+    fill_str    =  [column.name for column in dyf.schema if isinstance(column.dataType, (StringType))]
     
     ayer_string = (datetime.combine(datetime.today() - timedelta(days=1), datetime.min.time())).strftime("%Y-%m-%d %H:%M:%S")    
     
@@ -86,9 +85,10 @@ def num_positivos(dyf: F.DataFrame)-> F.DataFrame:
     return df
 
 def mayus_min(dyf: F.DataFrame) -> F.DataFrame:
-    for columns in dyf.schema:
-        if isinstance(columns.dataType, (StringType)):
-            df = dyf.withColumn(columns.name, F.initcap(columns.name))
+    df = dyf
+    for field in dyf.schema:
+        if isinstance(field.dataType, (StringType)):
+            df = df.withColumn(field.name, F.initcap(field.name))
 
     return df 
 
@@ -109,10 +109,11 @@ def convert_type_data(dyf: F.DataFrame, table_name: str) -> F.DataFrame:
     if table_name not in NEW_SCHEMA_CONFIG:
         return dyf
     
+    df = dyf
     new_schema = NEW_SCHEMA_CONFIG[table_name]
     new_columns = []
     
-    for field in dyf.schema.fields:
+    for field in df.schema.fields:
         columns_name = field.name
         
         if columns_name in new_schema:
@@ -121,7 +122,7 @@ def convert_type_data(dyf: F.DataFrame, table_name: str) -> F.DataFrame:
         else:
             new_columns.append(F.col(columns_name))
             
-    df = dyf.select(new_columns)
+    df = df.select(new_columns)
     return df
 
 
