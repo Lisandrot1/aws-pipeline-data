@@ -29,7 +29,7 @@ job         = Job(glueContext)
 job.init(args["JOB_NAME"], args)
 
 
-TABLES  = ["events", "sessions", "user_singups"]
+TABLES  = ["events", "sessions", "user_signups"]
 tablas  = {}
 for tables in TABLES:
     dyf = glueContext.create_dynamic_frame.from_catalog(
@@ -38,13 +38,32 @@ for tables in TABLES:
     )
     df = dyf.toDf()
     tablas[tables] = df
+    df.createOrReplaceTempView(tables)
 
-# lista
-def top_n_sessions():
-    pass
+# porcentaje de usuarios que se registran, pero no inician session aun.
+def porcentaje_login_user():
+    query_pct_user_sin_session = """
+        ---porcentaje de usuarios registrados pero que no han iniciado session
+        with conteo_sessiones as (
+            select 
+            -- contar usuarios sin sessiones
+            count(case when s.session_user_id is null then us.user_id end) as sin_sessiones,
+            -- cantidad de registros
+            count(us.user_id) as total_registrados 
+            from user_signups us
+            left join sessions s on us.user_id = s.session_user_id
+        )
+        select 
+            u.sin_sessiones,
+            u.total_registrados,
+            round((u.sin_sessiones * 100.0 / u.total_registrados), 2) as pct_user_sin_sessiones
+        from conteo_sessiones u
+    """
+    return spark.sql(query_pct_user_sin_session)
+    
 
 TABLAS_GOLD = {
-    "metricas": top_n_sessions
+    "pct_usuarios_sin_session": porcentaje_login_user
 }
 
 erros_tables       = []
@@ -63,7 +82,7 @@ for tabla_gold, function in TABLAS_GOLD.items():
             partitionKeys       = ["year", "month", "day"],
             transformation_ctx  = f"write_gold_{tabla_gold}"
         )
-        sink.setFormat("gluegold")
+        sink.setFormat("glueparquet")
         sink.setCatalogInfo(
             catalogDatabase  = "database-gold",
             catalogTableName = tabla_gold
@@ -75,7 +94,7 @@ for tabla_gold, function in TABLAS_GOLD.items():
     except Exception as ex:
         erros_tables.append({
             "table": tabla_gold,
-            "error":str(ex)
+            "error": str(ex)
         })
         logger.error(f"Table: {tabla_gold} Fallo: {str(ex)}", exc_info=True)
         continue
